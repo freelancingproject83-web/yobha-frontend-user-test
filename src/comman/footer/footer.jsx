@@ -148,7 +148,7 @@ const [newsletter , setNewsletter]=useState("")
                   className="flex-1 px-4 py-3 text-sm border border-text-light/30 focus:outline-none focus:border-black transition-colors bg-white rounded-none min-w-0"
                 />
                 <button className="px-6 py-3 bg-black text-white text-sm font-medium hover:bg-text-dark transition-colors duration-300 uppercase tracking-wider whitespace-nowrap flex-shrink-0" onClick={handleNewsSubscribe}>
-                  Sign Up
+                  Subscribe
                 </button>
               </div>
             </div>

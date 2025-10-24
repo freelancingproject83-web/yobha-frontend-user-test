@@ -371,7 +371,7 @@ const collectionItems = [
               <div className="relative group">
                 <button
                   className="flex items-center justify-center w-10 h-10 text-black hover:text-luxury-gold transition-all duration-300 rounded-full hover:bg-luxury-gold/10"
-                  title={t("header.myAccount")}
+                  title={t("navbar.account.myAccount." + i18n.language)}
                   onClick={() => navigate('/account')}
                 >
                   <User size={20} strokeWidth={1.5} />
@@ -386,21 +386,21 @@ const collectionItems = [
                         className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-sm text-black hover:text-luxury-gold font-medium"
                       >
                         <User size={16} />
-                        <span>{t("header.myAccount")}</span>
+                        <span>{t("navbar.account.myAccount." + i18n.language)}</span>
                       </Link>
                       <Link
                         to="/orders"
                         className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-sm text-black hover:text-luxury-gold font-medium"
                       >
                         <Package size={16} />
-                        <span>t("header.orders")</span>
+                        <span>{t("navbar.account.orders." + i18n.language)}</span>
                       </Link>
                       <Link
                         to="/wishlist"
                         className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-sm text-black hover:text-luxury-gold font-medium"
                       >
                         <Heart size={16} />
-                        <span>t("header.wishlist")</span>
+                        <span>{t("navbar.account.wishlist." + i18n.language)}</span>
                       </Link>
                     </div>
                   </div>
@@ -410,7 +410,7 @@ const collectionItems = [
               <Link
                 to="/login"
                 className="flex items-center justify-center w-10 h-10 text-black hover:text-luxury-gold transition-all duration-300 rounded-full hover:bg-luxury-gold/10"
-                title={t("header.login")}
+                title={t("navbar.account.login." + i18n.language)}
               >
                 <User size={20} strokeWidth={1.5} />
               </Link>
@@ -518,7 +518,7 @@ const collectionItems = [
                   onClick={() => toggleAccordion('account')}
                   className="flex items-center justify-between w-full text-black font-semibold py-2 hover:text-gray-700 transition-colors duration-300"
                 >
-                  <span>Account</span>
+                  <span>{t("navbar.account.myAccount." + i18n.language)}</span>
                   {expandedSections.account ? (
                     <ChevronDown size={18} />
                   ) : (
@@ -534,7 +534,7 @@ const collectionItems = [
                         className="block text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
                         onClick={() => setSidebarOpen(false)}
                       >
-                        t("header.login")
+                       { t("navbar.account.login."+i18n.language)}
                       </Link>
                     ) : (
                       <>
@@ -544,7 +544,7 @@ const collectionItems = [
                           onClick={() => setSidebarOpen(false)}
                         >
                           <User size={16} />
-                          <span>t("header.myAccount")</span>
+                          <span>{t("navbar.account.myAccount." + i18n.language)}</span>
                         </Link>
                         <Link
                           to="/orders"
@@ -552,7 +552,7 @@ const collectionItems = [
                           onClick={() => setSidebarOpen(false)}
                         >
                           <Package size={16} />
-                          <span>t("header.orders")</span>
+                          <span>{t("navbar.account.orders."+i18n.language)}</span>
                         </Link>
                         <Link
                           to="/wishlist"
@@ -560,7 +560,7 @@ const collectionItems = [
                           onClick={() => setSidebarOpen(false)}
                         >
                           <Heart size={16} />
-                          <span>t("header.wishlist")</span>
+                          <span>{t("navbar.account.wishlist."+i18n.language)}</span>
                         </Link>
                         <button
                           onClick={() => {
@@ -570,7 +570,7 @@ const collectionItems = [
                           className="flex items-center gap-3 text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm text-left w-full"
                         >
                           <LogOut size={16} />
-                          <span>t("header.logout")</span>
+                          <span>{t("navbar.account.logout."+i18n.language)}</span>
                         </button>
                       </>
                     )}
