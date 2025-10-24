@@ -5,9 +5,9 @@ import Socks from "../../../assets/SOCKS.jpg";
 import headband from "../../../assets/HEADBAND.jpg";
 import eyemask from "../../../assets/EYEMASKS.jpg";
 import cushions from "../../../assets/CUSHIONS.jpg";
-// Placeholder images for new categories
-const BATHROBE_IMAGE = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkJhdGhyb2JlPC90ZXh0Pgo8L3N2Zz4=";
-const TOWELS_IMAGE = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlRvd2VsczwvdGV4dD4KPC9zdmc+";
+import BATHROBE_IMAGE from "../../../assets/bathrobe.jpg"
+import TOWELS_IMAGE from "../../../assets/towel.jpg"
+
 const AccessoriesSection = () => {
   const navigate = useNavigate();
 
