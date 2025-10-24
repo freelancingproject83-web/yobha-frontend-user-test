@@ -8,8 +8,10 @@ import logoImage from "../../assets/yobhaLogo.png";
 import { useSelector } from "react-redux";
 import LanguageSwitcher from "../../LanguageSwitcher";
 import { getFilteredProducts } from "../../service/productAPI";
+import { useTranslation } from "react-i18next";
 
 const HeaderWithSidebar = () => {
+  const { t, i18n } = useTranslation();
   const cartCount = useSelector(state => state.cart.count);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -23,8 +25,20 @@ const HeaderWithSidebar = () => {
   const searchRef = useRef(null);
   const navigate = useNavigate();
 
-  const menuItems = ["Home", "Collections", "About"];
-  const collectionItems = ["Sleepwear", "Loungewear", "Homewear", "Accessories", "PetAccessories"];
+  const menuItems = [
+  { label: t("navbar.menu.home." + i18n.language), nav: "Home" },
+  { label: t("navbar.menu.collections." + i18n.language), nav: "Collections" },
+  { label: t("navbar.menu.about." + i18n.language), nav: "About" },
+  { label: t("navbar.menu.contact." + i18n.language), nav: "Contact" },
+];
+
+const collectionItems = [
+  { label: t("navbar.collectionsItems.sleepwear." + i18n.language), nav: "Sleepwear" },
+  { label: t("navbar.collectionsItems.loungewear." + i18n.language), nav: "Loungewear" },
+  { label: t("navbar.collectionsItems.homewear." + i18n.language), nav: "Homewear" },
+  { label: t("navbar.collectionsItems.accessories." + i18n.language), nav: "Accessories" },
+  { label: t("navbar.collectionsItems.petAccessories." + i18n.language), nav: "PetAccessories" },
+];
 
   // Check authentication status
   useEffect(() => {
@@ -98,8 +112,8 @@ const HeaderWithSidebar = () => {
         sort: "latest",
         country: null,
       });
-      
-      
+
+
       if (response?.success && response.data) {
         setSearchResults(response.data.items || []);
         setShowSearchResults(true);
@@ -120,12 +134,12 @@ const HeaderWithSidebar = () => {
   const handleSearchChange = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
-    
+
     // Clear previous timeout
     if (window.searchTimeout) {
       clearTimeout(window.searchTimeout);
     }
-    
+
     if (query.trim()) {
       // Debounce search by 300ms
       window.searchTimeout = setTimeout(() => {
@@ -172,7 +186,7 @@ const HeaderWithSidebar = () => {
       }}
     >
       <div className="max-w-[1600px] mx-auto flex items-center justify-between px-4 md:px-8 lg:px-12 py-4">
-        
+
         {/* Mobile Layout */}
         <div className="flex items-center justify-between w-full md:hidden">
           {/* Left Side - Mobile Menu & Search */}
@@ -183,7 +197,7 @@ const HeaderWithSidebar = () => {
             >
               <Menu size={20} />
             </button>
-            
+
             <button
               className="flex items-center justify-center w-8 h-8 text-black hover:text-gray-700 transition-colors duration-300"
               onClick={() => setSearchOpen(!searchOpen)}
@@ -254,33 +268,33 @@ const HeaderWithSidebar = () => {
             {/* Navigation Menu - Luxury Typography */}
             <nav className="flex items-center space-x-8">
               {menuItems.map((item) => (
-                <div key={item} className="relative group">
-                  {item === "Collections" ? (
+                <div key={item.nav} className="relative group">
+                  {item.nav === "Collections" ? (
                     <button className="text-black hover:text-luxury-gold transition-all duration-300 font-medium text-sm tracking-wide uppercase relative">
-                      {item}
+                      {item.label}
                       <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-luxury-gold transition-all duration-300 group-hover:w-full"></span>
                     </button>
                   ) : (
                     <Link
-                      to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
+                      to={item === "Home" ? "/" : `/${item.nav.toLowerCase()}`}
                       className="text-black hover:text-luxury-gold transition-all duration-300 font-medium text-sm tracking-wide uppercase relative"
                     >
-                      {item}
+                      {item.label}
                       <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-luxury-gold transition-all duration-300 group-hover:w-full"></span>
                     </Link>
                   )}
-                  
+
                   {/* Collections Dropdown - Luxury Design */}
-                  {item === "Collections" && (
+                  {item.nav === "Collections" && (
                     <div className="absolute top-10 left-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 delay-100 bg-white rounded-2xl p-6 min-w-[280px] shadow-2xl border border-gray-100">
                       <div className="space-y-3">
                         {collectionItems.map((cat) => (
                           <Link
-                            key={cat}
-                            to={`/products/${cat.replace(/\s/g, "-")}`}
+                            key={cat.label}
+                            to={`/products/${cat.nav.replace(/\s/g, "-")}`}
                             className="block px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-sm text-black hover:text-luxury-gold font-medium tracking-wide"
                           >
-                            {cat}
+                            {cat.label}
                           </Link>
                         ))}
                       </div>
@@ -298,7 +312,7 @@ const HeaderWithSidebar = () => {
                 <Search size={18} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Search luxury essentials..."
+                  placeholder={t("navbar.placeholders.search." + i18n.language)}
                   value={searchQuery}
                   onChange={handleSearchChange}
                   className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-luxury-gold/20 focus:border-luxury-gold/30 text-sm bg-gray-50/50 transition-all duration-300 hover:bg-white"
@@ -319,9 +333,9 @@ const HeaderWithSidebar = () => {
                         className="flex items-center gap-4 p-4 hover:bg-luxury-gold/5 cursor-pointer rounded-xl transition-all duration-300"
                       >
                         <div className="w-12 h-12 bg-gray-100 rounded-xl flex-shrink-0 overflow-hidden">
-                          <img 
-                            src={product.images?.[0] || "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=100&h=100&fit=crop&crop=center"} 
-                            alt={product.name} 
+                          <img
+                            src={product.images?.[0] || "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=100&h=100&fit=crop&crop=center"}
+                            alt={product.name}
                             className="w-full h-full object-cover"
                           />
                         </div>
@@ -339,7 +353,7 @@ const HeaderWithSidebar = () => {
               {/* No Results - Luxury Design */}
               {showSearchResults && searchResults.length === 0 && searchQuery.trim() && !searchLoading && (
                 <div className="absolute top-full left-0 right-0 bg-white border border-gray-100 rounded-2xl shadow-2xl z-50 p-6 mt-2">
-                  <p className="text-gray-500 text-sm text-center">No luxury items found for "{searchQuery}"</p>
+                  <p className="text-gray-500 text-sm text-center">placeholder={t("navbar.placeholders.search." + i18n.language)}"{searchQuery}"</p>
                 </div>
               )}
             </div>
@@ -357,7 +371,7 @@ const HeaderWithSidebar = () => {
               <div className="relative group">
                 <button
                   className="flex items-center justify-center w-10 h-10 text-black hover:text-luxury-gold transition-all duration-300 rounded-full hover:bg-luxury-gold/10"
-                  title="My Account"
+                  title={t("header.myAccount")}
                   onClick={() => navigate('/account')}
                 >
                   <User size={20} strokeWidth={1.5} />
@@ -372,21 +386,21 @@ const HeaderWithSidebar = () => {
                         className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-sm text-black hover:text-luxury-gold font-medium"
                       >
                         <User size={16} />
-                        <span>My Account</span>
+                        <span>{t("header.myAccount")}</span>
                       </Link>
                       <Link
                         to="/orders"
                         className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-sm text-black hover:text-luxury-gold font-medium"
                       >
                         <Package size={16} />
-                        <span>Orders</span>
+                        <span>t("header.orders")</span>
                       </Link>
                       <Link
                         to="/wishlist"
                         className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-sm text-black hover:text-luxury-gold font-medium"
                       >
                         <Heart size={16} />
-                        <span>Wishlist</span>
+                        <span>t("header.wishlist")</span>
                       </Link>
                     </div>
                   </div>
@@ -396,7 +410,7 @@ const HeaderWithSidebar = () => {
               <Link
                 to="/login"
                 className="flex items-center justify-center w-10 h-10 text-black hover:text-luxury-gold transition-all duration-300 rounded-full hover:bg-luxury-gold/10"
-                title="Login"
+                title={t("header.login")}
               >
                 <User size={20} strokeWidth={1.5} />
               </Link>
@@ -406,7 +420,7 @@ const HeaderWithSidebar = () => {
             <Link
               to="/cart"
               className="flex items-center justify-center w-10 h-10 text-black hover:text-luxury-gold transition-all duration-300 relative rounded-full hover:bg-luxury-gold/10"
-              title="Shopping Cart"
+              title={t("header.cart")}
             >
               <BsBag
                 size={20}
@@ -459,13 +473,13 @@ const HeaderWithSidebar = () => {
             <nav className="flex flex-col p-6 space-y-2 text-black text-base">
               {/* Main Navigation */}
               {menuItems.map((item) => (
-                <div key={item} className="w-full">
-                  {item === "Collections" ? (
+                <div key={item.nav} className="w-full">
+                  {item.nav === "Collections" ? (
                     <button
                       onClick={() => toggleAccordion('collections')}
                       className="flex items-center justify-between w-full text-black font-semibold py-2 hover:text-gray-700 transition-colors duration-300"
                     >
-                      <span>{item}</span>
+                      <span>{item.label}</span>
                       {expandedSections.collections ? (
                         <ChevronDown size={18} />
                       ) : (
@@ -474,23 +488,23 @@ const HeaderWithSidebar = () => {
                     </button>
                   ) : (
                     <Link
-                      to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
+                      to={item.nav === "Home" ? "/" : `/${item.nav.toLowerCase()}`}
                       className="block w-full text-black hover:text-gray-700 transition-colors duration-300 font-medium py-2"
                       onClick={() => setSidebarOpen(false)}
                     >
-                      {item}
+                      {item.label}
                     </Link>
                   )}
-                  {item === "Collections" && expandedSections.collections && (
+                  {item.nav === "Collections" && expandedSections.collections && (
                     <div className="pl-4 mt-2 space-y-2 animate-slideDown">
                       {collectionItems.map((cat) => (
                         <Link
-                          key={cat}
-                          to={`/products/${cat.replace(/\s/g, "-")}`}
+                          key={cat.label}
+                          to={`/products/${cat.nav.replace(/\s/g, "-")}`}
                           className="block text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
                           onClick={() => setSidebarOpen(false)}
                         >
-                          {cat}
+                          {cat.label}
                         </Link>
                       ))}
                     </div>
@@ -511,7 +525,7 @@ const HeaderWithSidebar = () => {
                     <ChevronRight size={18} />
                   )}
                 </button>
-                
+
                 {expandedSections.account && (
                   <div className="pl-4 mt-2 space-y-2 animate-slideDown">
                     {!isAuthenticated ? (
@@ -520,7 +534,7 @@ const HeaderWithSidebar = () => {
                         className="block text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
                         onClick={() => setSidebarOpen(false)}
                       >
-                        Login
+                        t("header.login")
                       </Link>
                     ) : (
                       <>
@@ -530,7 +544,7 @@ const HeaderWithSidebar = () => {
                           onClick={() => setSidebarOpen(false)}
                         >
                           <User size={16} />
-                          <span>My Account</span>
+                          <span>t("header.myAccount")</span>
                         </Link>
                         <Link
                           to="/orders"
@@ -538,7 +552,7 @@ const HeaderWithSidebar = () => {
                           onClick={() => setSidebarOpen(false)}
                         >
                           <Package size={16} />
-                          <span>Orders</span>
+                          <span>t("header.orders")</span>
                         </Link>
                         <Link
                           to="/wishlist"
@@ -546,7 +560,7 @@ const HeaderWithSidebar = () => {
                           onClick={() => setSidebarOpen(false)}
                         >
                           <Heart size={16} />
-                          <span>Wishlist</span>
+                          <span>t("header.wishlist")</span>
                         </Link>
                         <button
                           onClick={() => {
@@ -556,7 +570,7 @@ const HeaderWithSidebar = () => {
                           className="flex items-center gap-3 text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm text-left w-full"
                         >
                           <LogOut size={16} />
-                          <span>Logout</span>
+                          <span>t("header.logout")</span>
                         </button>
                       </>
                     )}
@@ -584,7 +598,7 @@ const HeaderWithSidebar = () => {
                   <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="Search..."
+                    placeholder={t("header.searchPlaceholder")}
                     value={searchQuery}
                     onChange={handleSearchChange}
                     className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-luxury-gold focus:border-transparent text-base"
@@ -611,9 +625,9 @@ const HeaderWithSidebar = () => {
                       className="flex items-center gap-3 p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0"
                     >
                       <div className="w-12 h-12 bg-gray-200 rounded-lg flex-shrink-0">
-                        <img 
-                          src={product.images?.[0] || "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=100&h=100&fit=crop&crop=center"} 
-                          alt={product.name} 
+                        <img
+                          src={product.images?.[0] || "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=100&h=100&fit=crop&crop=center"}
+                          alt={product.name}
                           className="w-full h-full object-cover rounded-lg"
                         />
                       </div>

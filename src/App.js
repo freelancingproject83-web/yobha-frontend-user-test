@@ -6,44 +6,44 @@ import AxiosInterceptorProvider from "./interceptors/axiosInterceptorProvider";
 import { store } from "./redux/store";
 import { Provider, useDispatch } from "react-redux";
 import { getCartDetails } from "./service/productAPI";
-import { setCartCount } from "./redux/cartSlice"; // assume you have this action
+import { setCartCount } from "./redux/cartSlice"; 
 import ToastContainer from "./comman/toster-message/ToastContainer";
 import ScrollToTop from "./ScrollToTop";
 import { LocalStorageKeys } from "./constants/localStorageKeys";
 import * as localStorageService from "./service/localStorageService";
+import "./i18n";
+import { useTranslation } from "react-i18next";
+
 function AppContent() {
   const dispatch = useDispatch();
-const navigate = useNavigate()
+  const navigate = useNavigate();
+  const { i18n } = useTranslation();
+
   useEffect(() => {
-  console.log("🔍 Current URL:", window.location.href);
+    const savedLang = localStorage.getItem("language") || "en";
+    i18n.changeLanguage(savedLang);
+    document.documentElement.dir = savedLang === "ar" ? "rtl" : "ltr";
+  }, [i18n]);
 
-  const hash = window.location.hash;
-  if (hash.includes("token=")) {
-    const token = hash.split("token=")[1];
-    console.log("✅ Token found:", token);
+  useEffect(() => {
+    console.log("🔍 Current URL:", window.location.href);
 
-    if (token) {
-      // Save token
-      localStorageService.setValue(LocalStorageKeys.AuthToken, token);
-      localStorageService.setValue(LocalStorageKeys.User, JSON.stringify({ provider: "Google" }));
-      console.log("💾 Token saved to localStorage");
-
-      // Remove hash from URL
-      window.history.replaceState({}, document.title, window.location.pathname);
-
-      // Optionally navigate to main page
-      navigate("/home"); 
-      console.log("➡️ Navigation complete");
+    const hash = window.location.hash;
+    if (hash.includes("token=")) {
+      const token = hash.split("token=")[1];
+      if (token) {
+        localStorageService.setValue(LocalStorageKeys.AuthToken, token);
+        localStorageService.setValue(LocalStorageKeys.User, JSON.stringify({ provider: "Google" }));
+        window.history.replaceState({}, document.title, window.location.pathname);
+        navigate("/home"); 
+      }
     }
-  } else {
-    console.log("⚠️ No token found in hash.");
-  }
-}, []);
+  }, [navigate]);
+
   const fetchCart = async () => {
     try {
       const response = await getCartDetails();
       const count = response.data.items.length;
-      console.log("Cart items:", count);
       dispatch(setCartCount(count)); 
     } catch (err) {
       console.log(err || "something went wrong");
@@ -55,11 +55,9 @@ const navigate = useNavigate()
   }, []);
 
   return (
-    <>
-      <ScrollToTop>
-        <Router />
-      </ScrollToTop>
-    </>
+    <ScrollToTop>
+      <Router />
+    </ScrollToTop>
   );
 }
 

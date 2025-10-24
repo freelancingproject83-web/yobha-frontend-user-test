@@ -1,0 +1,125 @@
+{
+  "navbar": {
+    "menu": {
+      "home": {
+        "en": "Home",
+        "hi": "होम",
+        "ar": "الرئيسية"
+      },
+      "collections": {
+        "en": "Collections",
+        "hi": "कलेक्शन",
+        "ar": "المجموعات"
+      },
+      "about": {
+        "en": "About",
+        "hi": "हमारे बारे में",
+        "ar": "حول"
+      },
+      "contact": {
+        "en": "Contact",
+        "hi": "संपर्क करें",
+        "ar": "اتصل"
+      }
+    },
+    "collectionsItems": {
+      "sleepwear": {
+        "en": "Sleepwear",
+        "hi": "स्लीपवियर",
+        "ar": "ملابس نوم"
+      },
+      "loungewear": {
+        "en": "Loungewear",
+        "hi": "लाउंजवियर",
+        "ar": "ملابس مريحة"
+      },
+      "homewear": {
+        "en": "Homewear",
+        "hi": "होमवियर",
+        "ar": "ملابس منزلية"
+      },
+      "accessories": {
+        "en": "Accessories",
+        "hi": "एक्सेसरीज़",
+        "ar": "إكسسوارات"
+      },
+      "petAccessories": {
+        "en": "Pet Accessories",
+        "hi": "पालतू एक्सेसरीज़",
+        "ar": "إكسسوارات الحيوانات"
+      }
+    },
+    "placeholders": {
+      "search": {
+        "en": "Search luxury essentials...",
+        "hi": "लक्ज़री उत्पाद खोजें...",
+        "ar": "ابحث عن المنتجات الفاخرة..."
+      }
+    },
+    "account": {
+      "myAccount": {
+        "en": "My Account",
+        "hi": "मेरा खाता",
+        "ar": "حسابي"
+      },
+      "orders": {
+        "en": "Orders",
+        "hi": "ऑर्डर",
+        "ar": "الطلبات"
+      },
+      "wishlist": {
+        "en": "Wishlist",
+        "hi": "विशलिस्ट",
+        "ar": "قائمة الرغبات"
+      },
+      "login": {
+        "en": "Login",
+        "hi": "लॉगिन",
+        "ar": "تسجيل الدخول"
+      },
+      "logout": {
+        "en": "Logout",
+        "hi": "लॉगआउट",
+        "ar": "تسجيل الخروج"
+      }
+    },
+    "cart": {
+      "tooltip": {
+        "en": "Shopping Cart",
+        "hi": "शॉपिंग कार्ट",
+        "ar": "عربة التسوق"
+      }
+    },
+    "wishlist": {
+      "tooltip": {
+        "en": "Wishlist",
+        "hi": "विशलिस्ट",
+        "ar": "قائمة الرغبات"
+      }
+    },
+    "languageSwitcher": {
+      "english": {
+        "en": "English",
+        "hi": "अंग्रेज़ी",
+        "ar": "الإنجليزية"
+      },
+      "hindi": {
+        "en": "Hindi",
+        "hi": "हिंदी",
+        "ar": "الهندية"
+      },
+      "arabic": {
+        "en": "Arabic",
+        "hi": "अरबी",
+        "ar": "العربية"
+      }
+    },
+    "searchResults": {
+      "noResults": {
+        "en": "No luxury items found for",
+        "hi": "कोई उत्पाद नहीं मिला",
+        "ar": "لا توجد منتجات"
+      }
+    }
+  }
+}
