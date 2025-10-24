@@ -89,10 +89,10 @@ const [newsletter , setNewsletter]=useState("")
             </ul>
           </div>
 
-          {/* Customer Service */}
+          {/* Policies */}
           <div>
             <h3 className="text-sm font-semibold mb-6 text-black uppercase tracking-wider">
-              Customer Service
+              Policies
             </h3>
             <ul className="space-y-3 text-sm">
               <li>
@@ -121,7 +121,7 @@ const [newsletter , setNewsletter]=useState("")
               </li>
               <li>
                 <Link
-                  to="/contact#faq"
+                  to="/faq"
                   className="text-text-medium hover:text-black transition-colors duration-300"
                 >
                   FAQs

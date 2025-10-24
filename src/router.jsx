@@ -15,6 +15,7 @@ const OrderDetails = lazy(() => import("./pages/order-details/order-details"));
 const Account = lazy(() => import("./pages/account/account"));
 const Contact = lazy(() => import("./pages/contact/contact"))
 const About = lazy(() => import("./pages/about/about"))
+const FAQ = lazy(() => import("./pages/faq/faq"))
 const PrivacyPolicy = lazy(() => import("./pages/privacy-policy/privacy-policy"));
 const TermsConditions = lazy(() => import("./pages/terms-conditions/terms-conditions"));
 const ReturnPolicy = lazy(() => import("./pages/return-policy/return-policy"));
@@ -34,6 +35,7 @@ const Router = () => {
     { path: "/account", element: <Account /> },
     { path: '/contact', element: <Contact /> },
     { path: '/about', element: <About /> },
+    { path: '/faq', element: <FAQ /> },
     { path: '/privacy-policy', element: <PrivacyPolicy /> },
     { path: '/terms-conditions', element: <TermsConditions /> },
     { path: '/return-policy', element: <ReturnPolicy /> }
