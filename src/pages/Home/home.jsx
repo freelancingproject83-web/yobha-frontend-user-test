@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import TrendingNewArrivals from './components/TrendingNewArrivals';
 import GenderGrid from './components/GenderGrid';
 import AccessoriesSection from './components/AccessoriesSection';
-import Searchbar from "../../comman/search-bar/search-bar";
 import { Sparkles, Star } from "lucide-react";
 
 const HomePage = () => {
@@ -92,22 +91,15 @@ const HomePage = () => {
           </>
         )}
 
-        {/* Enhanced Search Container with Animations */}
-        <div className={`absolute top-4 sm:top-5 left-1/2 transform -translate-x-1/2 w-[95%] sm:w-[90%] md:w-[80%] lg:w-[70%] xl:w-[60%] z-20 transition-all duration-700 ${showFloatingElements ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <div className="relative">
-            {/* Main Search Container */}
-            <Searchbar />
-          </div>
-        </div>
 
 
       </section>
 
       {/* Sections below video */}
       <div className="space-y-0">
-        <TrendingNewArrivals />
         <GenderGrid />
         <AccessoriesSection />
+        <TrendingNewArrivals />
       </div>
     </div>
   );

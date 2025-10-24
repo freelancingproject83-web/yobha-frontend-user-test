@@ -60,7 +60,7 @@ const TrendingNewArrivals = () => {
 
   return (
     <section
-      className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-16 md:py-20 bg-premium-cream overflow-hidden"
+      className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-premium-cream overflow-hidden"
       style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
     >
       {/* Luxury Background Pattern */}
@@ -72,12 +72,12 @@ const TrendingNewArrivals = () => {
       </div>
 
       {/* Section Header */}
-      <div className="relative z-10 text-center mb-12 md:mb-16">
-        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-widest text-black uppercase mb-4">
+      <div className="relative z-10 text-center mb-8 md:mb-12">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-black uppercase mb-4">
           New Arrivals
         </h2>
         <div className="w-16 h-1 bg-luxury-gold mx-auto mb-6"></div>
-        <p className="text-text-medium text-base md:text-lg lg:text-xl max-w-2xl mx-auto">
+        <p className="text-text-medium text-sm md:text-base lg:text-lg max-w-xl mx-auto">
           New Arrivals crafted for elevated living
         </p>
       </div>
@@ -94,7 +94,7 @@ const TrendingNewArrivals = () => {
           </div>
         </div>
       ) : displayProducts.length > 0 ? (
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4 lg:gap-6">
           {displayProducts.map((product, index) => (
             <article
               key={product.id}
@@ -120,7 +120,7 @@ const TrendingNewArrivals = () => {
 
                 {/* Premium Badge */}
                 {product.badge && (
-                  <span className="absolute top-3 left-3 text-xs px-2 py-1 bg-luxury-gold text-black font-semibold uppercase tracking-widest group-hover:bg-black group-hover:text-luxury-gold transition-all duration-300">
+                  <span className="absolute top-3 left-3 text-xs px-2 py-1 bg-luxury-gold text-black font-semibold uppercase  group-hover:bg-black group-hover:text-luxury-gold transition-all duration-300">
                     {product.badge}
                   </span>
                 )}
@@ -130,21 +130,21 @@ const TrendingNewArrivals = () => {
 
                 {/* Quick view button */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                  <button className="px-4 py-2 bg-luxury-gold text-black font-semibold text-xs uppercase tracking-widest hover:bg-black hover:text-luxury-gold transition-all duration-300 transform hover:scale-105">
+                  <button className="px-4 py-2 bg-luxury-gold text-black font-semibold text-xs uppercase  hover:bg-black hover:text-luxury-gold transition-all duration-300 transform hover:scale-105">
                     Quick View
                   </button>
                 </div>
               </div>
 
               {/* Product Details */}
-              <div className="p-3 sm:p-4 md:p-5 lg:p-6 flex flex-col flex-1 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 ease-out font-['Helvetica_Neue','Helvetica',sans-serif] group">
+              <div className="p-2 sm:p-3 md:p-4 flex flex-col flex-1 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-500 ease-out font-['Helvetica_Neue','Helvetica',sans-serif] group">
 
                 {/* Product Info */}
-                <div className="mb-3 sm:mb-4 flex-1">
-                  <h3 className="text-gray-900 font-semibold text-[12px] sm:text-sm md:text-base tracking-tight uppercase leading-snug line-clamp-2 min-h-[2.4rem] sm:min-h-[2.8rem] transition-colors duration-300 group-hover:text-[#ea5430]">
+                <div className="mb-2 sm:mb-3 flex-1">
+                  <h3 className="text-gray-900 font-semibold text-[11px] sm:text-xs md:text-sm tracking-tight uppercase leading-snug line-clamp-2 min-h-[2rem] sm:min-h-[2.2rem] transition-colors duration-300 group-hover:text-[#ea5430]">
                     {product.title}
                   </h3>
-                  <p className="text-gray-500 text-[11px] sm:text-xs tracking-wide italic line-clamp-1 mt-1">
+                  <p className="text-gray-500 text-[10px] sm:text-xs  italic line-clamp-1 mt-1">
                     {product.category}
                   </p>
                 </div>
@@ -157,7 +157,7 @@ const TrendingNewArrivals = () => {
         ₹{product.price}
       </span> */}
 
-                    <div className="text-[#c8a45d] text-[10px] sm:text-xs uppercase tracking-widest group-hover:text-[#ea5430] transition-all duration-300 ease-in flex items-center gap-1">
+                    <div className="text-[#c8a45d] text-[9px] sm:text-[10px] uppercase  group-hover:text-[#ea5430] transition-all duration-300 ease-in flex items-center gap-1">
                       View Details
                       <span className="translate-x-0 group-hover:translate-x-1 transition-transform duration-300">→</span>
                     </div>
@@ -182,7 +182,7 @@ const TrendingNewArrivals = () => {
         <div className="text-center mt-12 md:mt-16">
           <button
             onClick={() => navigate('/products')}
-            className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-black to-text-dark text-white font-semibold text-base sm:text-lg uppercase tracking-widest hover:bg-luxury-gold hover:text-white transition-all duration-500 transform hover:scale-105 border-2 border-black hover:border-luxury-gold shadow-lg hover:shadow-2xl"
+            className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-black to-text-dark text-white font-semibold text-sm sm:text-base uppercase  hover:bg-luxury-gold hover:text-white transition-all duration-500 transform hover:scale-105 border border-black hover:border-luxury-gold shadow-md hover:shadow-lg"
           >
             View All Products
           </button>

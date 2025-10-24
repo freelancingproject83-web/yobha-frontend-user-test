@@ -5,6 +5,9 @@ import Socks from "../../../assets/SOCKS.jpg";
 import headband from "../../../assets/HEADBAND.jpg";
 import eyemask from "../../../assets/EYEMASKS.jpg";
 import cushions from "../../../assets/CUSHIONS.jpg";
+// Placeholder images for new categories
+const BATHROBE_IMAGE = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkJhdGhyb2JlPC90ZXh0Pgo8L3N2Zz4=";
+const TOWELS_IMAGE = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlRvd2VsczwvdGV4dD4KPC9zdmc+";
 const AccessoriesSection = () => {
   const navigate = useNavigate();
 
@@ -54,6 +57,22 @@ const AccessoriesSection = () => {
       // image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkN1c2hpb25zPC90ZXh0Pgo8L3N2Zz4=",
       gradient: "from-amber-500/20 via-orange-500/10 to-transparent",
       featured: false
+    },
+    {
+      id: "bathrobe",
+      title: "Bathrobe",
+      description: "Luxury comfort for relaxation",
+      image: BATHROBE_IMAGE,
+      gradient: "from-violet-500/20 via-purple-500/10 to-transparent",
+      featured: true
+    },
+    {
+      id: "towels",
+      title: "Towels",
+      description: "Premium softness for daily comfort",
+      image: TOWELS_IMAGE,
+      gradient: "from-cyan-500/20 via-blue-500/10 to-transparent",
+      featured: false
     }
   ];
 
@@ -63,7 +82,7 @@ const AccessoriesSection = () => {
 
   return (
     <section 
-      className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-16 md:py-20 bg-white overflow-hidden"
+      className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-8 md:py-12 bg-white overflow-hidden"
       style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
     >
       {/* Luxury Background Pattern */}
@@ -75,8 +94,8 @@ const AccessoriesSection = () => {
       </div>
 
       {/* Section Header */}
-      <div className="relative z-10 text-center mb-12 md:mb-16">
-        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-widest text-black uppercase mb-4">
+        <div className="relative z-10 text-center mb-8 md:mb-12">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-black uppercase mb-4">
           Accessories
         </h2>
         <div className="w-16 h-1 bg-luxury-gold mx-auto mb-6"></div>
@@ -86,9 +105,9 @@ const AccessoriesSection = () => {
       </div>
 
       {/* Premium Accessories Showcase - Enhanced Mobile Responsiveness */}
-      <div className="space-y-6 md:space-y-8 lg:space-y-12">
-        {/* Featured Accessories - Large Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
+        <div className="space-y-4 md:space-y-6 lg:space-y-8">
+          {/* Featured Accessories - Large Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 md:gap-6 lg:gap-8">
           {accessoriesCategories.filter(cat => cat.featured).map((category) => (
             <article
               key={category.id}
@@ -98,43 +117,39 @@ const AccessoriesSection = () => {
               {/* Luxury Gold Accent Bar */}
               <div className="absolute top-0 left-0 w-full h-1 bg-luxury-gold"></div>
               
-              <div className="relative h-[300px] sm:h-[350px] md:h-[400px] lg:h-[450px] overflow-hidden bg-premium-cream">
-                <img
-                  src={category.image}
-                  alt={`${category.title} Collection`}
-                  className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-                  onError={(e) => {
-                    e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgdmlld0JveD0iMCAwIDgwMCA2MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iMzAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+";
-                  }}
-                />
-                <div className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent ${category.gradient}`}></div>
-                
-                {/* Luxury border overlay */}
-                <div className="absolute inset-0 border-2 border-white/20 group-hover:border-luxury-gold/40 transition-all duration-500"></div>
-                
-                {/* Featured badge */}
-                <div className="absolute top-4 left-4 sm:top-6 sm:left-6 px-3 py-1.5 sm:px-4 sm:py-2 bg-luxury-gold text-black text-xs font-semibold uppercase tracking-widest">
-                  Featured
-                </div>
-                
-                <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 lg:p-10">
-                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white uppercase tracking-wider mb-3 group-hover:scale-105 transition-transform duration-300">
-                    {category.title}
-                  </div>
-                  <div className="text-white/90 text-sm sm:text-base lg:text-lg tracking-wide mb-4">
-                    {category.description}
-                  </div>
-                  <div className="text-luxury-gold text-xs sm:text-sm uppercase tracking-widest group-hover:text-white transition-colors duration-300">
-                    Explore Collection →
+                <div className="relative h-[140px] sm:h-[180px] md:h-[220px] lg:h-[250px] overflow-hidden bg-premium-cream">
+                  <img
+                    src={category.image}
+                    alt={`${category.title} Collection`}
+                    className="absolute inset-0 h-full w-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                    onError={(e) => {
+                      e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgdmlld0JveD0iMCAwIDgwMCA2MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iMzAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+";
+                    }}
+                  />
+                  <div className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent ${category.gradient}`}></div>
+                  
+                  {/* Luxury border overlay */}
+                  <div className="absolute inset-0 border-2 border-white/20 group-hover:border-luxury-gold/40 transition-all duration-500"></div>
+                  
+                  {/* Content positioned at bottom with consistent spacing */}
+                  <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-4 md:p-5 lg:p-6">
+                    <div className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-white uppercase mb-1 sm:mb-2 group-hover:scale-105 transition-transform duration-300">
+                      {category.title}
+                    </div>
+                    <div className="text-white/90 text-[10px] sm:text-xs md:text-sm lg:text-base mb-1 sm:mb-2 lg:mb-3">
+                      {category.description}
+                    </div>
+                    <div className="text-luxury-gold text-[9px] sm:text-xs uppercase group-hover:text-white transition-colors duration-300">
+                      Explore Collection →
+                    </div>
                   </div>
                 </div>
-              </div>
             </article>
           ))}
         </div>
 
         {/* Regular Accessories - Grid Layout */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 md:gap-6 lg:gap-8">
           {accessoriesCategories.filter(cat => !cat.featured).map((category) => (
             <article
               key={category.id}
@@ -144,36 +159,37 @@ const AccessoriesSection = () => {
               {/* Luxury Gold Accent Bar */}
               <div className="absolute top-0 left-0 w-full h-1 bg-luxury-gold"></div>
               
-              <div className="relative h-[180px] sm:h-[220px] md:h-[280px] lg:h-[320px] overflow-hidden bg-premium-cream">
-                <img
-                  src={category.image}
-                  alt={`${category.title} Collection`}
-                  className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                  onError={(e) => {
-                    e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgdmlld0JveD0iMCAwIDgwMCA2MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iMzAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+";
-                  }}
-                />
-                <div className={`absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent ${category.gradient}`}></div>
-                
-                {/* Luxury border overlay */}
-                <div className="absolute inset-0 border-2 border-transparent group-hover:border-luxury-gold/30 transition-all duration-500"></div>
-                
-                <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 lg:p-6">
-                  <div className="text-base sm:text-lg lg:text-xl font-bold text-white uppercase tracking-wider mb-1 sm:mb-2 group-hover:scale-105 transition-transform duration-300">
-                    {category.title}
-                  </div>
-                  <div className="text-white/90 text-xs sm:text-sm tracking-wide line-clamp-2">
-                    {category.description}
+                <div className="relative h-[100px] sm:h-[120px] md:h-[140px] lg:h-[160px] overflow-hidden bg-premium-cream">
+                  <img
+                    src={category.image}
+                    alt={`${category.title} Collection`}
+                    className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                    onError={(e) => {
+                      e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgdmlld0JveD0iMCAwIDgwMCA2MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iMzAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+";
+                    }}
+                  />
+                  <div className={`absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent ${category.gradient}`}></div>
+                  
+                  {/* Luxury border overlay */}
+                  <div className="absolute inset-0 border-2 border-transparent group-hover:border-luxury-gold/30 transition-all duration-500"></div>
+                  
+                  {/* Content positioned at bottom with consistent spacing */}
+                  <div className="absolute bottom-0 left-0 right-0 p-1 sm:p-2 md:p-3 lg:p-4">
+                    <div className="text-xs sm:text-sm md:text-base lg:text-lg font-bold text-white uppercase mb-1 group-hover:scale-105 transition-transform duration-300">
+                      {category.title}
+                    </div>
+                    <div className="text-white/90 text-[9px] sm:text-xs md:text-sm line-clamp-2">
+                      {category.description}
+                    </div>
                   </div>
                 </div>
-              </div>
             </article>
           ))}
         </div>
       </div>
 
       {/* Luxury Call-to-Action */}
-      <div className="text-center mt-12 md:mt-16">
+      <div className="text-center mt-6 md:mt-8">
         {/* <button 
           onClick={() => navigate('/products/accessories')}
           className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-black to-text-dark text-white font-semibold text-base sm:text-lg uppercase tracking-widest hover:bg-luxury-gold hover:text-white transition-all duration-500 transform hover:scale-105 border-2 border-black hover:border-luxury-gold shadow-lg hover:shadow-2xl"

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { LogOut, Menu, X, User, Heart, Package } from "lucide-react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { LogOut, Menu, X, User, Heart, Package, Search, ChevronDown, ChevronRight, Loader2 } from "lucide-react";
 import { BsBag } from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
 import { LocalStorageKeys } from "../../constants/localStorageKeys";
@@ -7,16 +7,23 @@ import * as localStorageService from "../../service/localStorageService";
 import logoImage from "../../assets/yobhaLogo.png";
 import { useSelector } from "react-redux";
 import LanguageSwitcher from "../../LanguageSwitcher";
-import Searchbar from "../search-bar/search-bar";
+import { getFilteredProducts } from "../../service/productAPI";
 
 const HeaderWithSidebar = () => {
   const cartCount = useSelector(state => state.cart.count);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [cartAnimation, setCartAnimation] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [expandedSections, setExpandedSections] = useState({});
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const searchRef = useRef(null);
   const navigate = useNavigate();
 
-  const menuItems = ["Home", "Collections", "About", "Contact"];
+  const menuItems = ["Home", "Collections", "About"];
   const collectionItems = ["Sleepwear", "Loungewear", "Homewear", "Accessories", "PetAccessories"];
 
   // Check authentication status
@@ -62,6 +69,100 @@ const HeaderWithSidebar = () => {
     navigate("/login");
   };
 
+  // Accordion toggle function
+  const toggleAccordion = (section) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
+  // Search functionality
+  const handleSearch = useCallback(async (query) => {
+    if (!query.trim()) {
+      setSearchResults([]);
+      setShowSearchResults(false);
+      return;
+    }
+
+    setSearchLoading(true);
+    try {
+      const response = await getFilteredProducts({
+        q: query,
+        category: "",
+        subCategory: "",
+        minPrice: null,
+        maxPrice: null,
+        pageNumber: 1,
+        pageSize: 10,
+        sort: "latest",
+        country: null,
+      });
+      
+      
+      if (response?.success && response.data) {
+        setSearchResults(response.data.items || []);
+        setShowSearchResults(true);
+      } else {
+        setSearchResults([]);
+        setShowSearchResults(true);
+      }
+    } catch (error) {
+      console.error("Search error:", error);
+      setSearchResults([]);
+      setShowSearchResults(true);
+    } finally {
+      setSearchLoading(false);
+    }
+  }, []);
+
+  // Handle search input change with debounce
+  const handleSearchChange = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    
+    // Clear previous timeout
+    if (window.searchTimeout) {
+      clearTimeout(window.searchTimeout);
+    }
+    
+    if (query.trim()) {
+      // Debounce search by 300ms
+      window.searchTimeout = setTimeout(() => {
+        handleSearch(query);
+      }, 300);
+    } else {
+      setSearchResults([]);
+      setShowSearchResults(false);
+    }
+  };
+
+  // Handle search result click
+  const handleSearchResultClick = (product) => {
+    navigate(`/productDetail/${product.id}`);
+    setSearchOpen(false);
+    setSearchQuery("");
+    setSearchResults([]);
+    setShowSearchResults(false);
+  };
+
+  // Close search results when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowSearchResults(false);
+      }
+    };
+
+    if (searchOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [searchOpen]);
+
   return (
     <header
       className="fixed top-0 left-0 w-full z-50 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.1)]"
@@ -70,146 +171,265 @@ const HeaderWithSidebar = () => {
 
       }}
     >
-      <div className="max-w-[1600px] mx-auto flex items-center justify-between px-6 md:px-8 lg:px-12 py-4">
-
-        {/* Logo - Left Side */}
-        <Link
-          to="/"
-          className="flex items-center"
-        >
-          <img
-            src={logoImage}
-            alt="YOBHA Logo"
-            className="h-8 md:h-10"
-          />
-        </Link>
-        {/* Searchbar */}
-     
-
-
-        {/* Desktop Nav - Center */}
-        <nav className="hidden md:flex space-x-8 text-[15px] font-medium">
-          {menuItems.map((item) => (
-            <div key={item} className="relative group">
-              {item === "Collections" ? (
-                <button className="text-black hover:text-gray-700 tracking-wide transition-colors duration-300">
-                  {item}
-                </button>
-              ) : (
-                <Link
-                  to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-                  className="text-black hover:text-gray-700 tracking-wide transition-colors duration-300"
-                >
-                  {item}
-                </Link>
-              )}
-              {item === "Collections" && (
-                <div className="absolute top-8 left-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 delay-150 bg-white rounded-xl p-4 min-w-[200px] animate-slideDown shadow-lg">
-                  {collectionItems.map((cat) => (
-                    <Link
-                      key={cat}
-                      to={`/products/${cat.replace(/\s/g, "-")}`}
-                      className="block px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors duration-300 text-sm text-black hover:text-gray-700"
-                    >
-                      {cat}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </nav>
-
-        {/* Right Actions */}
-        <div className="flex items-center gap-8 md:gap-10">
-          {/* User Account Icon with Dropdown */}
-          <div className="hidden md:flex items-center gap-2">
-            <LanguageSwitcher />
-          </div>
-          {isAuthenticated ? (
-            <div className="relative group">
-              <button
-                className="text-black hover:text-gray-700 flex items-center cursor-pointer transition-colors duration-300"
-                title="My Account"
-              >
-                <User size={22} strokeWidth={1.8} />
-              </button>
-
-              {/* User Dropdown Menu */}
-              <div className="absolute top-full right-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                <div className="bg-white rounded-xl shadow-xl border border-gray-200 p-2 min-w-[200px]">
-                  <Link
-                    to="/account"
-                    className="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-gray-100 transition-colors duration-300 text-sm text-black hover:text-gray-700"
-                  >
-                    <User size={16} />
-                    <span>My Account</span>
-                  </Link>
-                  <Link
-                    to="/orders"
-                    className="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-gray-100 transition-colors duration-300 text-sm text-black hover:text-gray-700"
-                  >
-                    <Package size={16} />
-                    <span>Orders</span>
-                  </Link>
-                  <Link
-                    to="/wishlist"
-                    className="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-gray-100 transition-colors duration-300 text-sm text-black hover:text-gray-700"
-                  >
-                    <Heart size={16} />
-                    <span>Wishlist</span>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <Link
-              to="/login"
-              className="text-black hover:text-gray-700 flex items-center transition-colors duration-300"
-              title="Login"
+      <div className="max-w-[1600px] mx-auto flex items-center justify-between px-4 md:px-8 lg:px-12 py-4">
+        
+        {/* Mobile Layout */}
+        <div className="flex items-center justify-between w-full md:hidden">
+          {/* Left Side - Mobile Menu & Search */}
+          <div className="flex items-center gap-4">
+            <button
+              className="flex items-center justify-center w-8 h-8 focus:outline-none text-black hover:text-gray-700 transition-colors duration-300"
+              onClick={() => setSidebarOpen(true)}
             >
-              <User size={22} strokeWidth={1.8} />
-            </Link>
-          )}
+              <Menu size={20} />
+            </button>
+            
+            <button
+              className="flex items-center justify-center w-8 h-8 text-black hover:text-gray-700 transition-colors duration-300"
+              onClick={() => setSearchOpen(!searchOpen)}
+              title="Search"
+            >
+              <Search size={20} />
+            </button>
+          </div>
 
-          {/* Cart Icon - Always visible with unique design */}
+          {/* Center - Logo (Mobile) */}
           <Link
-            to="/cart"
-            className="text-black hover:text-gray-700 flex items-center transition-colors duration-300 relative"
-            title="Shopping Cart"
+            to="/"
+            className="flex items-center"
           >
-            <BsBag
-              size={22}
-              className={`transition-all duration-300 ${cartAnimation ? "scale-110" : "scale-100"
-                }`}
+            <img
+              src={logoImage}
+              alt="YOBHA Logo"
+              className="h-8"
             />
-            {cartCount > 0 && (
-              <span className={`absolute -top-2 -right-2 bg-red-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-lg transition-all duration-300 ${cartAnimation ? "scale-125" : "scale-100"
-                }`}>
-                {cartCount}
-              </span>
-            )}
           </Link>
 
-          {/* Logout Icon - Only when authenticated and on desktop */}
-          {isAuthenticated && (
-            <button
-              onClick={handleLogout}
-              className="hidden md:flex items-center text-black hover:text-gray-700 transition-colors duration-300"
-              title="Logout"
+          {/* Right Side - Wishlist & Cart (Mobile) */}
+          <div className="flex items-center gap-4">
+            {/* Wishlist Icon - Mobile */}
+            <Link
+              to="/wishlist"
+              className="flex items-center justify-center w-8 h-8 text-black hover:text-gray-700 transition-colors duration-300 relative"
+              title="Wishlist"
             >
-              <LogOut size={20} strokeWidth={1.8} />
-            </button>
-          )}
+              <Heart size={20} strokeWidth={1.8} />
+            </Link>
 
-          {/* Mobile menu toggle */}
+            {/* Cart Icon - Mobile */}
+            <Link
+              to="/cart"
+              className="flex items-center justify-center w-8 h-8 text-black hover:text-gray-700 transition-colors duration-300 relative"
+              title="Shopping Cart"
+            >
+              <BsBag
+                size={20}
+                className={`transition-all duration-300 ${cartAnimation ? "scale-110" : "scale-100"}`}
+              />
+              {cartCount > 0 && (
+                <span className={`absolute -top-2 -right-2 bg-luxury-gold text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-lg transition-all duration-300 ${cartAnimation ? "scale-125" : "scale-100"}`}>
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+          </div>
+        </div>
 
-          <button
-            className="md:hidden focus:outline-none text-black hover:text-gray-700 transition-colors duration-300"
-            onClick={() => setSidebarOpen(true)}
-          >
-            <Menu size={24} />
-          </button>
+        {/* Desktop/Tablet Layout - Luxury Minimal Design */}
+        <div className="hidden md:flex items-center justify-between w-full px-6">
+          {/* Left Section - Logo & Navigation */}
+          <div className="flex items-center space-x-12">
+            {/* YOBHA Logo */}
+            <Link
+              to="/"
+              className="flex items-center group"
+            >
+              <img
+                src={logoImage}
+                alt="YOBHA Logo"
+                className="h-9 transition-transform duration-300 group-hover:scale-105"
+              />
+            </Link>
+
+            {/* Navigation Menu - Luxury Typography */}
+            <nav className="flex items-center space-x-8">
+              {menuItems.map((item) => (
+                <div key={item} className="relative group">
+                  {item === "Collections" ? (
+                    <button className="text-black hover:text-luxury-gold transition-all duration-300 font-medium text-sm tracking-wide uppercase relative">
+                      {item}
+                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-luxury-gold transition-all duration-300 group-hover:w-full"></span>
+                    </button>
+                  ) : (
+                    <Link
+                      to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
+                      className="text-black hover:text-luxury-gold transition-all duration-300 font-medium text-sm tracking-wide uppercase relative"
+                    >
+                      {item}
+                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-luxury-gold transition-all duration-300 group-hover:w-full"></span>
+                    </Link>
+                  )}
+                  
+                  {/* Collections Dropdown - Luxury Design */}
+                  {item === "Collections" && (
+                    <div className="absolute top-10 left-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 delay-100 bg-white rounded-2xl p-6 min-w-[280px] shadow-2xl border border-gray-100">
+                      <div className="space-y-3">
+                        {collectionItems.map((cat) => (
+                          <Link
+                            key={cat}
+                            to={`/products/${cat.replace(/\s/g, "-")}`}
+                            className="block px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-sm text-black hover:text-luxury-gold font-medium tracking-wide"
+                          >
+                            {cat}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </nav>
+          </div>
+
+          {/* Center Section - Search */}
+          <div className="flex-1 max-w-md mx-8">
+            <div className="relative" ref={searchRef}>
+              <div className="relative">
+                <Search size={18} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search luxury essentials..."
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-luxury-gold/20 focus:border-luxury-gold/30 text-sm bg-gray-50/50 transition-all duration-300 hover:bg-white"
+                />
+                {searchLoading && (
+                  <Loader2 size={16} className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 animate-spin" />
+                )}
+              </div>
+
+              {/* Search Results - Luxury Design */}
+              {showSearchResults && searchResults.length > 0 && (
+                <div className="absolute top-full left-0 right-0 bg-white border border-gray-100 rounded-2xl shadow-2xl z-50 max-h-96 overflow-y-auto mt-2">
+                  <div className="p-2">
+                    {searchResults.map((product) => (
+                      <div
+                        key={product.id}
+                        onClick={() => handleSearchResultClick(product)}
+                        className="flex items-center gap-4 p-4 hover:bg-luxury-gold/5 cursor-pointer rounded-xl transition-all duration-300"
+                      >
+                        <div className="w-12 h-12 bg-gray-100 rounded-xl flex-shrink-0 overflow-hidden">
+                          <img 
+                            src={product.images?.[0] || "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=100&h=100&fit=crop&crop=center"} 
+                            alt={product.name} 
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-medium text-black text-sm leading-tight truncate">{product.name}</h4>
+                          <p className="text-gray-500 text-xs uppercase tracking-wide">{product.category}</p>
+                          <p className="text-luxury-gold font-semibold text-sm">Rs. {product.price} INR</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* No Results - Luxury Design */}
+              {showSearchResults && searchResults.length === 0 && searchQuery.trim() && !searchLoading && (
+                <div className="absolute top-full left-0 right-0 bg-white border border-gray-100 rounded-2xl shadow-2xl z-50 p-6 mt-2">
+                  <p className="text-gray-500 text-sm text-center">No luxury items found for "{searchQuery}"</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Right Section - Utilities */}
+          <div className="flex items-center space-x-6">
+            {/* Language Switcher */}
+            <div className="flex items-center">
+              <LanguageSwitcher />
+            </div>
+
+            {/* Account Icon - Luxury Design */}
+            {isAuthenticated ? (
+              <div className="relative group">
+                <button
+                  className="flex items-center justify-center w-10 h-10 text-black hover:text-luxury-gold transition-all duration-300 rounded-full hover:bg-luxury-gold/10"
+                  title="My Account"
+                  onClick={() => navigate('/account')}
+                >
+                  <User size={20} strokeWidth={1.5} />
+                </button>
+
+                {/* User Dropdown - Luxury Design */}
+                <div className="absolute top-12 right-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                  <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 p-3 min-w-[220px]">
+                    <div className="space-y-1">
+                      <Link
+                        to="/account"
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-sm text-black hover:text-luxury-gold font-medium"
+                      >
+                        <User size={16} />
+                        <span>My Account</span>
+                      </Link>
+                      <Link
+                        to="/orders"
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-sm text-black hover:text-luxury-gold font-medium"
+                      >
+                        <Package size={16} />
+                        <span>Orders</span>
+                      </Link>
+                      <Link
+                        to="/wishlist"
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-sm text-black hover:text-luxury-gold font-medium"
+                      >
+                        <Heart size={16} />
+                        <span>Wishlist</span>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="flex items-center justify-center w-10 h-10 text-black hover:text-luxury-gold transition-all duration-300 rounded-full hover:bg-luxury-gold/10"
+                title="Login"
+              >
+                <User size={20} strokeWidth={1.5} />
+              </Link>
+            )}
+
+            {/* Cart Icon - Luxury Design */}
+            <Link
+              to="/cart"
+              className="flex items-center justify-center w-10 h-10 text-black hover:text-luxury-gold transition-all duration-300 relative rounded-full hover:bg-luxury-gold/10"
+              title="Shopping Cart"
+            >
+              <BsBag
+                size={20}
+                className={`transition-all duration-300 ${cartAnimation ? "scale-110" : "scale-100"}`}
+              />
+              {cartCount > 0 && (
+                <span className={`absolute -top-1 -right-1 bg-luxury-gold text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-lg transition-all duration-300 ${cartAnimation ? "scale-125" : "scale-100"}`}>
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+
+            {/* Logout Icon - Luxury Design */}
+            {isAuthenticated && (
+              <button
+                onClick={handleLogout}
+                className="flex items-center justify-center w-10 h-10 text-black hover:text-luxury-gold transition-all duration-300 rounded-full hover:bg-luxury-gold/10"
+                title="Logout"
+              >
+                <LogOut size={18} strokeWidth={1.5} />
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -236,65 +456,184 @@ const HeaderWithSidebar = () => {
               </button>
             </div>
 
-            <nav className="flex flex-col p-6 space-y-3 text-black text-base">
+            <nav className="flex flex-col p-6 space-y-2 text-black text-base">
+              {/* Main Navigation */}
               {menuItems.map((item) => (
                 <div key={item} className="w-full">
                   {item === "Collections" ? (
-                    <span className="block w-full text-black font-semibold">{item}</span>
+                    <button
+                      onClick={() => toggleAccordion('collections')}
+                      className="flex items-center justify-between w-full text-black font-semibold py-2 hover:text-gray-700 transition-colors duration-300"
+                    >
+                      <span>{item}</span>
+                      {expandedSections.collections ? (
+                        <ChevronDown size={18} />
+                      ) : (
+                        <ChevronRight size={18} />
+                      )}
+                    </button>
                   ) : (
                     <Link
                       to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-                      className="block w-full text-black hover:text-gray-700 transition-colors duration-300 font-medium"
+                      className="block w-full text-black hover:text-gray-700 transition-colors duration-300 font-medium py-2"
                       onClick={() => setSidebarOpen(false)}
                     >
                       {item}
                     </Link>
                   )}
-                  {item === "Collections" && (
-                    <div className="pl-4 mt-3 space-y-2">
+                  {item === "Collections" && expandedSections.collections && (
+                    <div className="pl-4 mt-2 space-y-2 animate-slideDown">
                       {collectionItems.map((cat) => (
                         <Link
                           key={cat}
                           to={`/products/${cat.replace(/\s/g, "-")}`}
-                          className="block text-black hover:text-gray-700 transition-colors duration-300 py-1"
+                          className="block text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
                           onClick={() => setSidebarOpen(false)}
                         >
                           {cat}
                         </Link>
                       ))}
-
                     </div>
                   )}
                 </div>
               ))}
 
-              {/* Sidebar Login/Logout */}
-              <div className="pt-4 border-t border-gray-300 mt-2">
-                {!isAuthenticated ? (
-                  <Link
-                    to="/login"
-                    className="block text-black hover:text-gray-700 transition-colors duration-300 font-semibold"
-                    onClick={() => setSidebarOpen(false)}
-                  >
-                    Login
-                  </Link>
-                ) : (
-                  <button
-                    onClick={() => {
-                      setSidebarOpen(false);
-                      handleLogout();
-                    }}
-                    className="flex items-center gap-3 text-black hover:text-gray-700 transition-colors duration-300 text-left w-full font-semibold"
-                  >
-                    <LogOut size={20} />
-                    <span>Logout</span>
-                  </button>
+              {/* Account Section - Accordion */}
+              <div className="pt-4 border-t border-gray-200 mt-4">
+                <button
+                  onClick={() => toggleAccordion('account')}
+                  className="flex items-center justify-between w-full text-black font-semibold py-2 hover:text-gray-700 transition-colors duration-300"
+                >
+                  <span>Account</span>
+                  {expandedSections.account ? (
+                    <ChevronDown size={18} />
+                  ) : (
+                    <ChevronRight size={18} />
+                  )}
+                </button>
+                
+                {expandedSections.account && (
+                  <div className="pl-4 mt-2 space-y-2 animate-slideDown">
+                    {!isAuthenticated ? (
+                      <Link
+                        to="/login"
+                        className="block text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
+                        onClick={() => setSidebarOpen(false)}
+                      >
+                        Login
+                      </Link>
+                    ) : (
+                      <>
+                        <Link
+                          to="/account"
+                          className="flex items-center gap-3 text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
+                          onClick={() => setSidebarOpen(false)}
+                        >
+                          <User size={16} />
+                          <span>My Account</span>
+                        </Link>
+                        <Link
+                          to="/orders"
+                          className="flex items-center gap-3 text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
+                          onClick={() => setSidebarOpen(false)}
+                        >
+                          <Package size={16} />
+                          <span>Orders</span>
+                        </Link>
+                        <Link
+                          to="/wishlist"
+                          className="flex items-center gap-3 text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
+                          onClick={() => setSidebarOpen(false)}
+                        >
+                          <Heart size={16} />
+                          <span>Wishlist</span>
+                        </Link>
+                        <button
+                          onClick={() => {
+                            setSidebarOpen(false);
+                            handleLogout();
+                          }}
+                          className="flex items-center gap-3 text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm text-left w-full"
+                        >
+                          <LogOut size={16} />
+                          <span>Logout</span>
+                        </button>
+                      </>
+                    )}
+                  </div>
                 )}
               </div>
-              <div className="pt-4 border-t border-gray-300 mt-2 md:hidden">
+
+              {/* Language Switcher */}
+              <div className="pt-4 border-t border-gray-200 mt-4">
                 <LanguageSwitcher />
               </div>
             </nav>
+          </div>
+        </div>
+      )}
+
+      {/* Search Section - Mobile Only */}
+      {searchOpen && (
+        <div className="md:hidden bg-white border-t border-gray-200 shadow-lg animate-slideDown">
+          <div className="max-w-[1600px] mx-auto px-4 py-4">
+            {/* Mobile Search Input */}
+            <div className="relative" ref={searchRef}>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex-1 relative">
+                  <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-luxury-gold focus:border-transparent text-base"
+                  />
+                  {searchLoading && (
+                    <Loader2 size={18} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 animate-spin" />
+                  )}
+                </div>
+                <button
+                  onClick={() => setSearchOpen(false)}
+                  className="text-gray-500 hover:text-gray-700 transition-colors duration-300 p-1"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              {/* Search Results - Mobile */}
+              {showSearchResults && searchResults.length > 0 && (
+                <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto">
+                  {searchResults.map((product) => (
+                    <div
+                      key={product.id}
+                      onClick={() => handleSearchResultClick(product)}
+                      className="flex items-center gap-3 p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0"
+                    >
+                      <div className="w-12 h-12 bg-gray-200 rounded-lg flex-shrink-0">
+                        <img 
+                          src={product.images?.[0] || "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=100&h=100&fit=crop&crop=center"} 
+                          alt={product.name} 
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-medium text-black text-sm leading-tight truncate">{product.name}</h4>
+                        <p className="text-gray-600 text-xs">{product.category}</p>
+                        <p className="text-black font-medium text-sm">Rs. {product.price} INR</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* No Results - Mobile */}
+              {showSearchResults && searchResults.length === 0 && searchQuery.trim() && !searchLoading && (
+                <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-50 p-4">
+                  <p className="text-gray-500 text-sm text-center">No products found for "{searchQuery}"</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
