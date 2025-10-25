@@ -3,6 +3,7 @@ import { Send, Gift, User, Mail, Phone, MapPin, Edit3, Save, X } from "lucide-re
 import { addAddress, updateAddress, deleteAddress, getAddresses, createReferral } from "../../service/address";
 import { message } from "../../comman/toster-message/ToastContainer";
 import { updateUserName } from "../../service/user";
+import CountryDropdown from "../../countryDropdown";
 
 
 const AccountPage = () => {
@@ -249,6 +250,11 @@ const AccountPage = () => {
         .catch(() => message.error("Failed to copy referral link"));
     }
   };
+// const handleCountryConfirmed = (country) => {
+//   // Save selected country in localStorage and state if needed
+//   updateLocalStorage({ country: country.label });
+//   message.success(`Country updated to ${country.label}`);
+// };
 
   return (
     <div
@@ -600,6 +606,15 @@ const AccountPage = () => {
 
           </form>
         </div>
+        {/* Country Selector */}
+<div className="mt-6">
+  <label className="text-xs font-semibold text-text-medium mb-3 block flex items-center gap-2 uppercase tracking-[0.2em]">
+    <MapPin size={14} />
+    Country
+  </label>
+  <CountryDropdown  />
+</div>
+
       </div>
     </div>
   );

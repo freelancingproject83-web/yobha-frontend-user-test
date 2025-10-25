@@ -48,7 +48,11 @@ const ProductDetailPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   // UI State
-  const [selectedCountry, setSelectedCountry] = useState('IN');
+  const savedCountry = localStorage.getItem('selectedCountry');
+const parsedCountry = savedCountry ? JSON.parse(savedCountry) : countryOptions[0];
+
+// const [selectedCountry] = useState(parsedCountry);
+  const [selectedCountry, setSelectedCountry] = useState(parsedCountry.code);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
@@ -238,43 +242,89 @@ const ProductDetailPage = () => {
 
   }
   // Add to cart
-  const handleAddToCart = async () => {
-    if (!selectedColor || !selectedSize || availableQuantity === 0) {
-      message.error('Please select color and size');
-      return;
-    }
+  // const handleAddToCart = async () => {
+  //   if (!selectedColor || !selectedSize || availableQuantity === 0) {
+  //     message.error('Please select color and size');
+  //     return;
+  //   }
 
-    setAddingToCart(true);
+  //   setAddingToCart(true);
 
-    const payload = {
-      productId: product.productId,
-      size: selectedSize,
+  //   const payload = {
+  //     productId: product.productId,
+  //     size: selectedSize,
+  //     quantity: quantity,
+  //     currency: product?.priceList?.find(
+  //       (item) => item.country === selectedCountry && item.size === selectedSize
+  //     ).currency,
+  //     note: ""
+  //   };
+
+  //   try {
+  //     const response = await addToCart(payload);
+  //     console.log("Added to cart:", response);
+  //     console.log(response.data.success)
+  //     if (response.data.success === 'true') {
+  //       message.success("Product added to cart successfully!");
+  //     }
+  //     else {
+  //       message.error(response.data.message)
+  //     }
+  //     setItemAddedToCart(true);
+  //     fetchCart()
+  //   } catch (err) {
+  //     console.error("Error adding to cart:", err);
+  //     message.error("Failed to add product to cart. Please try again.");
+  //   } finally {
+  //     setAddingToCart(false);
+  //   }
+  // };
+const handleAddToCart = (product, selectedSize, selectedCountry, quantity) => {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+
+  const safeProduct = JSON.parse(
+    JSON.stringify(product, (key, value) => {
+      if (typeof value === "function") return undefined;
+      if (key.startsWith("__react")) return undefined;
+      return value;
+    })
+  );
+
+  // 🛑 Restrict to one country
+  const existingCountry = cart.length > 0 ? cart[0].country : null;
+  if (existingCountry && existingCountry !== selectedCountry) {
+    alert(`You can only add items from ${existingCountry}.`);
+    return;
+  }
+
+
+  const itemIndex = cart.findIndex(
+    (item) => item.id === safeProduct.id && item.size === selectedSize
+  );
+
+  if (itemIndex !== -1) {
+   
+    cart[itemIndex] = {
+      ...cart[itemIndex],
       quantity: quantity,
-      currency: product?.priceList?.find(
-        (item) => item.country === selectedCountry && item.size === selectedSize
-      ).currency,
-      note: ""
     };
+  } else {
 
-    try {
-      const response = await addToCart(payload);
-      console.log("Added to cart:", response);
-      console.log(response.data.success)
-      if (response.data.success === 'true') {
-        message.success("Product added to cart successfully!");
-      }
-      else {
-        message.error(response.data.message)
-      }
-      setItemAddedToCart(true);
-      fetchCart()
-    } catch (err) {
-      console.error("Error adding to cart:", err);
-      message.error("Failed to add product to cart. Please try again.");
-    } finally {
-      setAddingToCart(false);
-    }
-  };
+    cart.push({
+      ...safeProduct,
+      size: selectedSize,
+      country: selectedCountry,
+      quantity: quantity,
+      country:selectedCountry
+    });
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+  alert(`${safeProduct.name || "Product"} added to cart!`);
+};
+
+
 
   const handleGoToCart = () => {
     navigate("/cart");
@@ -570,7 +620,7 @@ const handleBuyNow = () => {
             </div>
 
             {/* Country Selector */}
-            <div className="mt-4">
+            {/* <div className="mt-4">
               <label htmlFor="country" className="block text-sm text-text-light mb-1">
                 Select Country
               </label>
@@ -587,7 +637,7 @@ const handleBuyNow = () => {
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
 
             {/* Debug or use selected country */}
             <div className="mt-2 text-sm text-text-light">
@@ -755,7 +805,7 @@ const handleBuyNow = () => {
                 // In Stock - Show both buttons
                 <div className="flex gap-3 sm:gap-4 flex-1">
                   <button
-                    onClick={itemAddedToCart ? handleGoToCart : handleAddToCart}
+                    onClick={itemAddedToCart ? handleGoToCart :  () => handleAddToCart(product, selectedSize, selectedCountry,quantity)}
                     disabled={
                       !selectedColor ||
                       !selectedSize ||
