@@ -85,7 +85,7 @@ const AccessoriesSection = () => {
   return (
     <section 
       ref={sectionRef}
-      className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-gradient-to-br from-slate-50 via-gray-50 to-stone-100 overflow-hidden"
+      className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-8 sm:py-10 md:py-12 lg:py-16 bg-gradient-to-br from-slate-50 via-gray-50 to-stone-100 overflow-hidden"
       style={{ fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif" }}
     >
       {/* Luxury Background Pattern */}
@@ -97,14 +97,14 @@ const AccessoriesSection = () => {
       </div>
 
       {/* Section Header - Premium Typography */}
-      <div className="relative z-10 text-center mb-12 md:mb-16">
+      <div className="relative z-10 text-center mb-8 sm:mb-10 md:mb-12 lg:mb-16">
         <div className="overflow-hidden">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-gray-900 uppercase tracking-widest mb-6 transform translate-y-0 opacity-100 transition-all duration-1000">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light text-gray-900 uppercase tracking-widest mb-4 sm:mb-6 transform translate-y-0 opacity-100 transition-all duration-1000">
             Accessories
           </h2>
         </div>
-        <div className="w-20 h-px bg-gradient-to-r from-transparent via-luxury-gold to-transparent mx-auto mb-8"></div>
-        <p className="text-gray-600 text-sm md:text-base lg:text-lg max-w-2xl mx-auto font-light tracking-wide leading-relaxed">
+        <div className="w-16 sm:w-20 h-px bg-gradient-to-r from-transparent via-luxury-gold to-transparent mx-auto mb-6 sm:mb-8"></div>
+        <p className="text-gray-600 text-xs sm:text-sm md:text-base lg:text-lg max-w-2xl mx-auto font-light tracking-wide leading-relaxed px-4">
           Essential luxury accessories crafted for elevated living
         </p>
       </div>
@@ -112,7 +112,7 @@ const AccessoriesSection = () => {
       {/* Premium Accessories Showcase - Enhanced Mobile Responsiveness */}
         <div className="space-y-1 md:space-y-1.5 lg:space-y-2">
           {/* Featured Accessories - Large Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5 sm:gap-2 md:gap-2.5 lg:gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-2.5 md:gap-3 lg:gap-3">
           {accessoriesCategories.filter(cat => cat.featured).map((category, index) => (
             <article
               key={category.id}
@@ -134,7 +134,7 @@ const AccessoriesSection = () => {
               {/* Luxury Gold Accent Bar */}
               <div className="absolute top-0 left-0 w-full h-1 bg-luxury-gold"></div>
               
-                <div className="relative h-[200px] sm:h-[240px] md:h-[280px] lg:h-[320px] overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+                <div className="relative h-[180px] sm:h-[200px] md:h-[240px] lg:h-[280px] xl:h-[320px] overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
                   <div className="absolute inset-0 overflow-hidden">
                     <img
                       src={category.image}
@@ -167,10 +167,10 @@ const AccessoriesSection = () => {
                   
                   {/* Content positioned at bottom with premium styling */}
                   <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-2.5 md:p-3">
-                    <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-light text-white uppercase mb-2 sm:mb-3 group-hover:scale-105 transition-transform duration-500 tracking-widest">
+                    <div className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-light text-white uppercase mb-1 sm:mb-2 md:mb-3 group-hover:scale-105 transition-transform duration-500 tracking-widest">
                       {category.title}
                     </div>
-                    <div className="text-white/90 text-sm sm:text-base md:text-lg mb-3 sm:mb-4 font-light tracking-wide leading-relaxed">
+                    <div className="text-white/90 text-xs sm:text-sm md:text-base lg:text-lg mb-2 sm:mb-3 md:mb-4 font-light tracking-wide leading-relaxed">
                       {category.description}
                     </div>
                     <div className="text-luxury-gold text-xs sm:text-sm uppercase font-light tracking-widest group-hover:text-white transition-colors duration-500 flex items-center gap-2">
@@ -184,7 +184,7 @@ const AccessoriesSection = () => {
         </div>
 
         {/* Regular Accessories - Grid Layout */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1 sm:gap-1.5 md:gap-2 lg:gap-2.5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-1.5 sm:gap-2 md:gap-2.5 lg:gap-2.5">
           {accessoriesCategories.filter(cat => !cat.featured).map((category, index) => (
             <article
               key={category.id}
@@ -206,7 +206,7 @@ const AccessoriesSection = () => {
               {/* Luxury Gold Accent Bar */}
               <div className="absolute top-0 left-0 w-full h-1 bg-luxury-gold"></div>
               
-                <div className="relative h-[120px] sm:h-[140px] md:h-[160px] lg:h-[180px] overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+                <div className="relative h-[100px] sm:h-[120px] md:h-[140px] lg:h-[160px] xl:h-[180px] overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
                   <div className="absolute inset-0 overflow-hidden">
                     <img
                       src={category.image}
@@ -238,8 +238,8 @@ const AccessoriesSection = () => {
                   <div className="absolute bottom-2 right-2 w-1 h-1 bg-luxury-gold/40 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-700 animate-pulse" style={{animationDelay: '0.5s'}}></div>
                   
                   {/* Content positioned at bottom with premium styling */}
-                  <div className="absolute bottom-0 left-0 right-0 p-1.5 sm:p-1.5 md:p-2">
-                    <div className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-white uppercase mb-1 group-hover:scale-105 transition-transform duration-500 tracking-widest">
+                  <div className="absolute bottom-0 left-0 right-0 p-1 sm:p-1.5 md:p-2">
+                    <div className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-light text-white uppercase mb-0.5 sm:mb-1 group-hover:scale-105 transition-transform duration-500 tracking-widest">
                       {category.title}
                     </div>
                     <div className="text-white/90 text-xs sm:text-sm md:text-base line-clamp-2 font-light tracking-wide leading-relaxed">
@@ -283,6 +283,17 @@ const AccessoriesSection = () => {
           
           .group:active img {
             animation: floatImage 2s ease-in-out infinite !important;
+          }
+        }
+        
+        /* Tablet optimizations */
+        @media (min-width: 768px) and (max-width: 1024px) {
+          .group:hover {
+            transform: translateY(-4px) !important;
+          }
+          
+          .group:hover img {
+            animation: floatImage 3s ease-in-out infinite !important;
           }
         }
         

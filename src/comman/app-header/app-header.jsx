@@ -254,7 +254,7 @@ const accessoriesItems = [
         fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif",
       }}
     >
-      <div className="max-w-[1600px] mx-auto flex items-center justify-between px-6 md:px-12 lg:px-16 py-5">
+       <div className="max-w-[1600px] mx-auto flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-3 md:py-4 lg:py-5">
 
         {/* Mobile Layout */}
         <div className="flex items-center justify-between w-full md:hidden">
@@ -302,7 +302,7 @@ const accessoriesItems = [
             {/* Cart Icon - Mobile */}
             <Link
               to="/cart"
-              className="flex items-center justify-center w-8 h-8 text-black hover:text-gray-700 transition-colors duration-300 relative"
+              className="flex items-center justify-center w-8 h-8 text-black hover:text-gray-700 transition-colors duration-300 relative overflow-visible"
               title="Shopping Cart"
             >
               <BsBag
@@ -310,7 +310,7 @@ const accessoriesItems = [
                 className={`transition-all duration-300 ${cartAnimation ? "scale-110" : "scale-100"}`}
               />
               {cartCount > 0 && (
-                <span className={`absolute -top-2 -right-2 bg-luxury-gold text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-lg transition-all duration-300 ${cartAnimation ? "scale-125" : "scale-100"}`}>
+                <span className={`absolute -top-1 -right-1 bg-luxury-gold text-white text-xs w-4 h-4 rounded-full flex items-center justify-center font-bold shadow-lg transition-all duration-300 ${cartAnimation ? "scale-125" : "scale-100"}`}>
                   {cartCount}
                 </span>
               )}
@@ -318,24 +318,24 @@ const accessoriesItems = [
           </div>
         </div>
 
-        {/* Desktop/Tablet Layout - Luxury Minimal Design */}
-        <div className="hidden md:flex items-center justify-between w-full px-6">
+         {/* Desktop/Tablet Layout - Luxury Minimal Design */}
+         <div className="hidden md:flex items-center justify-between w-full">
           {/* Left Section - Logo & Navigation */}
-          <div className="flex items-center space-x-12">
+          <div className="flex items-center space-x-6 md:space-x-8 lg:space-x-12">
             {/* YOBHA Logo */}
             <Link
               to="/"
               className="flex items-center group"
             >
-              <img
-                src={logoImage}
-                alt="YOBHA Logo"
-                className="h-9 transition-transform duration-300 group-hover:scale-105"
-              />
+               <img
+                 src={logoImage}
+                 alt="YOBHA Logo"
+                 className="h-7 md:h-8 lg:h-9 transition-transform duration-300 group-hover:scale-105"
+               />
             </Link>
 
             {/* Navigation Menu - Premium Typography */}
-            <nav className="flex items-center space-x-12">
+            <nav className="flex items-center space-x-6 md:space-x-8 lg:space-x-12">
               {menuItems.map((item) => (
                 <div
                   key={item.nav}
@@ -345,9 +345,9 @@ const accessoriesItems = [
                 >
                   <button
                     onClick={() => handleMainMenuClick(item.nav)}
-                    className={`text-gray-700 hover:text-gray-900 transition-all duration-500 font-light text-sm tracking-widest uppercase relative group ${
-                      activeSecondaryMenu === item.nav ? 'text-gray-900' : ''
-                    }`}
+                     className={`text-gray-700 hover:text-gray-900 transition-all duration-500 font-light text-xs md:text-sm tracking-widest uppercase relative group ${
+                       activeSecondaryMenu === item.nav ? 'text-gray-900' : ''
+                     }`}
                   >
                     {item.label}
                     <span className={`absolute -bottom-2 left-0 h-px bg-gray-900 transition-all duration-500 ease-out ${
@@ -359,18 +359,18 @@ const accessoriesItems = [
             </nav>
           </div>
 
-          {/* Center Section - Search */}
-          <div className="flex-1 max-w-md mx-8">
+           {/* Center Section - Search */}
+           <div className="flex-1 max-w-sm md:max-w-md mx-4 md:mx-6 lg:mx-8">
             <div className="relative" ref={searchRef}>
               <div className="relative">
                 <Search size={18} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder={t("navbar.placeholders.search." + i18n.language)}
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                  className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-luxury-gold/20 focus:border-luxury-gold/30 text-sm bg-gray-50/50 transition-all duration-300 hover:bg-white"
-                />
+                 <input
+                   type="text"
+                   placeholder={t("navbar.placeholders.search." + i18n.language)}
+                   value={searchQuery}
+                   onChange={handleSearchChange}
+                   className="w-full pl-10 md:pl-12 pr-4 py-2 md:py-3 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-luxury-gold/20 focus:border-luxury-gold/30 text-xs md:text-sm bg-gray-50/50 transition-all duration-300 hover:bg-white"
+                 />
                 {searchLoading && (
                   <Loader2 size={16} className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 animate-spin" />
                 )}
@@ -413,26 +413,26 @@ const accessoriesItems = [
             </div>
           </div>
 
-          {/* Right Section - Utilities */}
-          <div className="flex items-center space-x-6">
-            {/* Wishlist Icon - Desktop Only */}
-            <Link
-              to="/wishlist"
-              className="flex items-center justify-center w-10 h-10 text-black hover:text-luxury-gold transition-all duration-300 rounded-full hover:bg-luxury-gold/10"
-              title={t("navbar.wishlist.tooltip." + i18n.language)}
-            >
-              <Heart size={20} strokeWidth={1.5} />
-            </Link>
+           {/* Right Section - Utilities */}
+           <div className="flex items-center space-x-3 md:space-x-4 lg:space-x-6">
+             {/* Wishlist Icon - Desktop Only */}
+             <Link
+               to="/wishlist"
+               className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-luxury-gold transition-all duration-300 rounded-full hover:bg-luxury-gold/10"
+               title={t("navbar.wishlist.tooltip." + i18n.language)}
+             >
+               <Heart size={18} className="md:w-5 md:h-5" strokeWidth={1.5} />
+             </Link>
 
             {/* Account Icon - Luxury Design */}
             {isAuthenticated ? (
               <div className="relative group">
                 <button
-                  className="flex items-center justify-center w-10 h-10 text-black hover:text-luxury-gold transition-all duration-300 rounded-full hover:bg-luxury-gold/10"
+                  className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-luxury-gold transition-all duration-300 rounded-full hover:bg-luxury-gold/10"
                   title={t("navbar.account.myAccount." + i18n.language)}
                   onClick={() => navigate('/account')}
                 >
-                  <User size={20} strokeWidth={1.5} />
+                  <User size={18} className="md:w-5 md:h-5" strokeWidth={1.5} />
                 </button>
 
                 {/* User Dropdown - Luxury Design */}
@@ -458,42 +458,42 @@ const accessoriesItems = [
                 </div>
               </div>
             ) : (
-              <Link
-                to="/login"
-                className="flex items-center justify-center w-10 h-10 text-black hover:text-luxury-gold transition-all duration-300 rounded-full hover:bg-luxury-gold/10"
-                title={t("navbar.account.login." + i18n.language)}
-              >
-                <User size={20} strokeWidth={1.5} />
-              </Link>
+               <Link
+                 to="/login"
+                 className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-luxury-gold transition-all duration-300 rounded-full hover:bg-luxury-gold/10"
+                 title={t("navbar.account.login." + i18n.language)}
+               >
+                 <User size={18} className="md:w-5 md:h-5" strokeWidth={1.5} />
+               </Link>
             )}
 
             {/* Cart Icon - Luxury Design */}
             <Link
               to="/cart"
-              className="flex items-center justify-center w-10 h-10 text-black hover:text-luxury-gold transition-all duration-300 relative rounded-full hover:bg-luxury-gold/10"
+              className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-luxury-gold transition-all duration-300 relative rounded-full hover:bg-luxury-gold/10 overflow-visible"
               title={t("header.cart")}
             >
               <BsBag
-                size={20}
-                className={`transition-all duration-300 ${cartAnimation ? "scale-110" : "scale-100"}`}
+                size={18}
+                className={`md:w-5 md:h-5 transition-all duration-300 ${cartAnimation ? "scale-110" : "scale-100"}`}
               />
               {cartCount > 0 && (
-                <span className={`absolute -top-1 -right-1 bg-luxury-gold text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-lg transition-all duration-300 ${cartAnimation ? "scale-125" : "scale-100"}`}>
+                <span className={`absolute -top-0.5 -right-0.5 bg-luxury-gold text-white text-xs w-4 h-4 md:w-5 md:h-5 rounded-full flex items-center justify-center font-bold shadow-lg transition-all duration-300 ${cartAnimation ? "scale-125" : "scale-100"}`}>
                   {cartCount}
                 </span>
               )}
             </Link>
 
-            {/* Logout Icon - Luxury Design */}
-            {isAuthenticated && (
-              <button
-                onClick={handleLogout}
-                className="flex items-center justify-center w-10 h-10 text-black hover:text-luxury-gold transition-all duration-300 rounded-full hover:bg-luxury-gold/10"
-                title="Logout"
-              >
-                <LogOut size={18} strokeWidth={1.5} />
-              </button>
-            )}
+             {/* Logout Icon - Luxury Design */}
+             {isAuthenticated && (
+               <button
+                 onClick={handleLogout}
+                 className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-luxury-gold transition-all duration-300 rounded-full hover:bg-luxury-gold/10"
+                 title="Logout"
+               >
+                 <LogOut size={16} className="md:w-4 md:h-4" strokeWidth={1.5} />
+               </button>
+             )}
 
             {/* Language Switcher */}
             <div className="flex items-center">
@@ -505,23 +505,23 @@ const accessoriesItems = [
 
       {/* Secondary Header Section - Premium Design */}
       {showSecondaryHeader && (
-        <div 
-          ref={secondaryHeaderRef} 
-          className="hidden md:block bg-white/95 backdrop-blur-md border-t border-gray-100/50 shadow-xl animate-slideDown"
-          style={{
-            fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif",
-          }}
-          onMouseEnter={handleSecondaryHeaderMouseEnter}
-          onMouseLeave={handleSecondaryHeaderMouseLeave}
-        >
-          <div className="max-w-[1600px] mx-auto px-6 md:px-12 lg:px-16 py-8">
+         <div 
+           ref={secondaryHeaderRef} 
+           className="hidden md:block bg-white/95 backdrop-blur-md border-t border-gray-100/50 shadow-xl animate-slideDown"
+           style={{
+             fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif",
+           }}
+           onMouseEnter={handleSecondaryHeaderMouseEnter}
+           onMouseLeave={handleSecondaryHeaderMouseLeave}
+         >
+           <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-6 md:py-8">
             {activeSecondaryMenu === "Collections" && (
-              <div className="flex flex-wrap justify-center gap-8 md:gap-12">
+              <div className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-12">
                 {collectionItems.map((item, index) => (
                   <Link
                     key={item.label}
                     to={`/products/${item.nav.replace(/\s/g, "-")}`}
-                    className="group relative px-6 py-3 text-sm font-light text-gray-600 hover:text-gray-900 transition-all duration-500 uppercase tracking-widest hover:scale-105 transform"
+                    className="group relative px-4 md:px-6 py-2 md:py-3 text-xs md:text-sm font-light text-gray-600 hover:text-gray-900 transition-all duration-500 uppercase tracking-widest hover:scale-105 transform"
                     style={{
                       animationDelay: `${index * 100}ms`,
                       animation: 'fadeInUp 0.6s ease-out forwards'
@@ -535,12 +535,12 @@ const accessoriesItems = [
             )}
             
             {activeSecondaryMenu === "Accessories" && (
-              <div className="flex flex-wrap justify-center gap-8 md:gap-12">
+              <div className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-12">
                 {accessoriesItems.map((item, index) => (
                   <Link
                     key={item.label}
                     to={`/products/${item.nav}`}
-                    className="group relative px-6 py-3 text-sm font-light text-gray-600 hover:text-gray-900 transition-all duration-500 uppercase tracking-widest hover:scale-105 transform"
+                    className="group relative px-4 md:px-6 py-2 md:py-3 text-xs md:text-sm font-light text-gray-600 hover:text-gray-900 transition-all duration-500 uppercase tracking-widest hover:scale-105 transform"
                     style={{
                       animationDelay: `${index * 100}ms`,
                       animation: 'fadeInUp 0.6s ease-out forwards'
