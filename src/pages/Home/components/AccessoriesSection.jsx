@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import SCRUNCHIES from "../../../assets/SCRUNCHIES.jpg";
 import Socks from "../../../assets/SOCKS.jpg";
@@ -10,6 +10,8 @@ import TOWELS_IMAGE from "../../../assets/towel.jpg"
 
 const AccessoriesSection = () => {
   const navigate = useNavigate();
+  const [hoveredCard, setHoveredCard] = useState(null);
+  const sectionRef = useRef(null);
 
   // Define all accessories categories with their details
   const accessoriesCategories = [
@@ -82,8 +84,9 @@ const AccessoriesSection = () => {
 
   return (
     <section 
-      className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-8 md:py-12 bg-white overflow-hidden"
-      style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+      ref={sectionRef}
+      className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-gradient-to-br from-slate-50 via-gray-50 to-stone-100 overflow-hidden"
+      style={{ fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif" }}
     >
       {/* Luxury Background Pattern */}
       <div className="absolute inset-0 opacity-5">
@@ -93,54 +96,80 @@ const AccessoriesSection = () => {
         <div className="absolute bottom-10 right-10 w-14 h-14 border border-luxury-gold/30 rotate-45"></div>
       </div>
 
-      {/* Section Header */}
-        <div className="relative z-10 text-center mb-8 md:mb-12">
-        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-black uppercase mb-4">
-          Accessories
-        </h2>
-        <div className="w-16 h-1 bg-luxury-gold mx-auto mb-6"></div>
-        <p className="text-text-medium text-base md:text-lg lg:text-xl max-w-2xl mx-auto">
-          Essential luxury accessories for every lifestyle
+      {/* Section Header - Premium Typography */}
+      <div className="relative z-10 text-center mb-12 md:mb-16">
+        <div className="overflow-hidden">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-gray-900 uppercase tracking-widest mb-6 transform translate-y-0 opacity-100 transition-all duration-1000">
+            Accessories
+          </h2>
+        </div>
+        <div className="w-20 h-px bg-gradient-to-r from-transparent via-luxury-gold to-transparent mx-auto mb-8"></div>
+        <p className="text-gray-600 text-sm md:text-base lg:text-lg max-w-2xl mx-auto font-light tracking-wide leading-relaxed">
+          Essential luxury accessories crafted for elevated living
         </p>
       </div>
 
       {/* Premium Accessories Showcase - Enhanced Mobile Responsiveness */}
         <div className="space-y-4 md:space-y-6 lg:space-y-8">
           {/* Featured Accessories - Large Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 md:gap-6 lg:gap-8">
-          {accessoriesCategories.filter(cat => cat.featured).map((category) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10 lg:gap-12">
+          {accessoriesCategories.filter(cat => cat.featured).map((category, index) => (
             <article
               key={category.id}
-              className="group bg-white border border-text-light/10 overflow-hidden shadow-lg hover:shadow-2xl cursor-pointer transition-all duration-700 flex flex-col relative"
+              className="group bg-white/95 backdrop-blur-sm border border-gray-100/50 overflow-hidden shadow-sm hover:shadow-2xl cursor-pointer transition-all duration-700 flex flex-col relative transform hover:-translate-y-2"
               onClick={() => handleNavigate(category.id)}
+              onMouseEnter={() => setHoveredCard(category.id)}
+              onMouseLeave={() => setHoveredCard(null)}
+              style={{
+                animationDelay: `${index * 200}ms`,
+                animation: 'fadeInUp 0.8s ease-out forwards'
+              }}
             >
               {/* Luxury Gold Accent Bar */}
               <div className="absolute top-0 left-0 w-full h-1 bg-luxury-gold"></div>
               
-                <div className="relative h-[140px] sm:h-[180px] md:h-[220px] lg:h-[250px] overflow-hidden bg-premium-cream">
-                  <img
-                    src={category.image}
-                    alt={`${category.title} Collection`}
-                    className="absolute inset-0 h-full w-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-                    onError={(e) => {
-                      e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgdmlld0JveD0iMCAwIDgwMCA2MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iMzAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+";
-                    }}
-                  />
-                  <div className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent ${category.gradient}`}></div>
+                <div className="relative h-[200px] sm:h-[240px] md:h-[280px] lg:h-[320px] overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+                  <div className="absolute inset-0 overflow-hidden">
+                    <img
+                      src={category.image}
+                      alt={`${category.title} Collection`}
+                      className={`h-full w-full object-cover transition-all duration-1000 ease-out ${
+                        hoveredCard === category.id 
+                          ? 'scale-110 rotate-2' 
+                          : 'scale-100 rotate-0'
+                      }`}
+                      style={{
+                        animation: hoveredCard === category.id 
+                          ? 'floatImage 3s ease-in-out infinite' 
+                          : 'none'
+                      }}
+                      onError={(e) => {
+                        e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgdmlld0JveD0iMCAwIDgwMCA2MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iMzAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+";
+                      }}
+                    />
+                  </div>
                   
-                  {/* Luxury border overlay */}
-                  <div className="absolute inset-0 border-2 border-white/20 group-hover:border-luxury-gold/40 transition-all duration-500"></div>
+                  {/* Premium Gradient Overlay */}
+                  <div className={`absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent ${category.gradient} group-hover:from-black/70 transition-all duration-700`}></div>
                   
-                  {/* Content positioned at bottom with consistent spacing */}
-                  <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-4 md:p-5 lg:p-6">
-                    <div className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-white uppercase mb-1 sm:mb-2 group-hover:scale-105 transition-transform duration-300">
+                  {/* Premium Border Effect */}
+                  <div className="absolute inset-0 border border-transparent group-hover:border-luxury-gold/40 transition-all duration-700"></div>
+                  
+                  {/* Floating Elements */}
+                  <div className="absolute top-4 right-4 w-2 h-2 bg-luxury-gold/60 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-700 animate-pulse"></div>
+                  <div className="absolute bottom-4 right-4 w-1 h-1 bg-luxury-gold/40 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-700 animate-pulse" style={{animationDelay: '0.5s'}}></div>
+                  
+                  {/* Content positioned at bottom with premium styling */}
+                  <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 md:p-8">
+                    <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-light text-white uppercase mb-2 sm:mb-3 group-hover:scale-105 transition-transform duration-500 tracking-widest">
                       {category.title}
                     </div>
-                    <div className="text-white/90 text-[10px] sm:text-xs md:text-sm lg:text-base mb-1 sm:mb-2 lg:mb-3">
+                    <div className="text-white/90 text-sm sm:text-base md:text-lg mb-3 sm:mb-4 font-light tracking-wide leading-relaxed">
                       {category.description}
                     </div>
-                    <div className="text-luxury-gold text-[9px] sm:text-xs uppercase group-hover:text-white transition-colors duration-300">
-                      Explore Collection →
+                    <div className="text-luxury-gold text-xs sm:text-sm uppercase font-light tracking-widest group-hover:text-white transition-colors duration-500 flex items-center gap-2">
+                      <span>Explore Collection</span>
+                      <span className="translate-x-0 group-hover:translate-x-1 transition-transform duration-500">→</span>
                     </div>
                   </div>
                 </div>
@@ -149,36 +178,59 @@ const AccessoriesSection = () => {
         </div>
 
         {/* Regular Accessories - Grid Layout */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 md:gap-6 lg:gap-8">
-          {accessoriesCategories.filter(cat => !cat.featured).map((category) => (
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10">
+          {accessoriesCategories.filter(cat => !cat.featured).map((category, index) => (
             <article
               key={category.id}
-              className="group bg-white border border-text-light/10 overflow-hidden shadow-lg hover:shadow-xl cursor-pointer transition-all duration-700 flex flex-col relative"
+              className="group bg-white/95 backdrop-blur-sm border border-gray-100/50 overflow-hidden shadow-sm hover:shadow-2xl cursor-pointer transition-all duration-700 flex flex-col relative transform hover:-translate-y-2"
               onClick={() => handleNavigate(category.id)}
+              onMouseEnter={() => setHoveredCard(category.id)}
+              onMouseLeave={() => setHoveredCard(null)}
+              style={{
+                animationDelay: `${(index + 3) * 150}ms`,
+                animation: 'fadeInUp 0.8s ease-out forwards'
+              }}
             >
               {/* Luxury Gold Accent Bar */}
               <div className="absolute top-0 left-0 w-full h-1 bg-luxury-gold"></div>
               
-                <div className="relative h-[100px] sm:h-[120px] md:h-[140px] lg:h-[160px] overflow-hidden bg-premium-cream">
-                  <img
-                    src={category.image}
-                    alt={`${category.title} Collection`}
-                    className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                    onError={(e) => {
-                      e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgdmlld0JveD0iMCAwIDgwMCA2MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iMzAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+";
-                    }}
-                  />
-                  <div className={`absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent ${category.gradient}`}></div>
+                <div className="relative h-[120px] sm:h-[140px] md:h-[160px] lg:h-[180px] overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+                  <div className="absolute inset-0 overflow-hidden">
+                    <img
+                      src={category.image}
+                      alt={`${category.title} Collection`}
+                      className={`h-full w-full object-cover transition-all duration-1000 ease-out ${
+                        hoveredCard === category.id 
+                          ? 'scale-110 rotate-1' 
+                          : 'scale-100 rotate-0'
+                      }`}
+                      style={{
+                        animation: hoveredCard === category.id 
+                          ? 'floatImage 3s ease-in-out infinite' 
+                          : 'none'
+                      }}
+                      onError={(e) => {
+                        e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgdmlld0JveD0iMCAwIDgwMCA2MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iMzAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+";
+                      }}
+                    />
+                  </div>
                   
-                  {/* Luxury border overlay */}
-                  <div className="absolute inset-0 border-2 border-transparent group-hover:border-luxury-gold/30 transition-all duration-500"></div>
+                  {/* Premium Gradient Overlay */}
+                  <div className={`absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent ${category.gradient} group-hover:from-black/70 transition-all duration-700`}></div>
                   
-                  {/* Content positioned at bottom with consistent spacing */}
-                  <div className="absolute bottom-0 left-0 right-0 p-1 sm:p-2 md:p-3 lg:p-4">
-                    <div className="text-xs sm:text-sm md:text-base lg:text-lg font-bold text-white uppercase mb-1 group-hover:scale-105 transition-transform duration-300">
+                  {/* Premium Border Effect */}
+                  <div className="absolute inset-0 border border-transparent group-hover:border-luxury-gold/40 transition-all duration-700"></div>
+                  
+                  {/* Floating Elements */}
+                  <div className="absolute top-2 right-2 w-1.5 h-1.5 bg-luxury-gold/60 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-700 animate-pulse"></div>
+                  <div className="absolute bottom-2 right-2 w-1 h-1 bg-luxury-gold/40 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-700 animate-pulse" style={{animationDelay: '0.5s'}}></div>
+                  
+                  {/* Content positioned at bottom with premium styling */}
+                  <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3 md:p-4">
+                    <div className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-white uppercase mb-1 group-hover:scale-105 transition-transform duration-500 tracking-widest">
                       {category.title}
                     </div>
-                    <div className="text-white/90 text-[9px] sm:text-xs md:text-sm line-clamp-2">
+                    <div className="text-white/90 text-xs sm:text-sm md:text-base line-clamp-2 font-light tracking-wide leading-relaxed">
                       {category.description}
                     </div>
                   </div>
@@ -188,15 +240,37 @@ const AccessoriesSection = () => {
         </div>
       </div>
 
-      {/* Luxury Call-to-Action */}
-      <div className="text-center mt-6 md:mt-8">
-        {/* <button 
-          onClick={() => navigate('/products/accessories')}
-          className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-black to-text-dark text-white font-semibold text-base sm:text-lg uppercase tracking-widest hover:bg-luxury-gold hover:text-white transition-all duration-500 transform hover:scale-105 border-2 border-black hover:border-luxury-gold shadow-lg hover:shadow-2xl"
-        >
-          View All Accessories
-        </button> */}
-      </div>
+
+      {/* Premium Animations CSS */}
+      <style jsx>{`
+        @keyframes fadeInUp {
+          0% {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes floatImage {
+          0%, 100% {
+            transform: translateY(0px) rotate(0deg);
+          }
+          50% {
+            transform: translateY(-10px) rotate(1deg);
+          }
+        }
+        
+        .animate-fadeInUp {
+          animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        .animate-floatImage {
+          animation: floatImage 3s ease-in-out infinite;
+        }
+      `}</style>
     </section>
   );
 };

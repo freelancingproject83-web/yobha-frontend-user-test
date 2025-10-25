@@ -1,11 +1,13 @@
-import React, { useMemo, useEffect, useState } from "react";
+import React, { useMemo, useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { getFilteredProducts } from "../../../service/productAPI";
 
 const TrendingNewArrivals = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState([]);
+  const [hoveredCard, setHoveredCard] = useState(null);
   const navigate = useNavigate();
+  const sectionRef = useRef(null);
 
   // ✅ Fetch your API data
   useEffect(() => {
@@ -60,8 +62,9 @@ const TrendingNewArrivals = () => {
 
   return (
     <section
+      ref={sectionRef}
       className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-premium-cream overflow-hidden"
-      style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+      style={{ fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif" }}
     >
       {/* Luxury Background Pattern */}
       <div className="absolute inset-0 opacity-5">
@@ -71,14 +74,16 @@ const TrendingNewArrivals = () => {
         <div className="absolute bottom-10 right-10 w-14 h-14 border border-luxury-gold/30 rotate-45"></div>
       </div>
 
-      {/* Section Header */}
-      <div className="relative z-10 text-center mb-8 md:mb-12">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-black uppercase mb-4">
-          New Arrivals
-        </h2>
-        <div className="w-16 h-1 bg-luxury-gold mx-auto mb-6"></div>
-        <p className="text-text-medium text-sm md:text-base lg:text-lg max-w-xl mx-auto">
-          New Arrivals crafted for elevated living
+      {/* Section Header - Premium Typography */}
+      <div className="relative z-10 text-center mb-12 md:mb-16">
+        <div className="overflow-hidden">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-gray-900 uppercase tracking-widest mb-6 transform translate-y-0 opacity-100 transition-all duration-1000">
+            New Arrivals
+          </h2>
+        </div>
+        <div className="w-20 h-px bg-gradient-to-r from-transparent via-luxury-gold to-transparent mx-auto mb-8"></div>
+        <p className="text-gray-600 text-sm md:text-base lg:text-lg max-w-2xl mx-auto font-light tracking-wide leading-relaxed">
+          Discover our latest collection of premium essentials, crafted with meticulous attention to detail
         </p>
       </div>
 
@@ -94,72 +99,88 @@ const TrendingNewArrivals = () => {
           </div>
         </div>
       ) : displayProducts.length > 0 ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4 lg:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10">
           {displayProducts.map((product, index) => (
             <article
               key={product.id}
-              className="group bg-white border border-text-light/10 overflow-hidden shadow-lg hover:shadow-2xl cursor-pointer transition-all duration-700 flex flex-col relative"
+              className="group bg-white/95 backdrop-blur-sm border border-gray-100/50 overflow-hidden shadow-sm hover:shadow-2xl cursor-pointer transition-all duration-700 flex flex-col relative transform hover:-translate-y-2"
               onClick={() => navigate(`/productDetail/${product.id}`)}
+              onMouseEnter={() => setHoveredCard(product.id)}
+              onMouseLeave={() => setHoveredCard(null)}
+              style={{
+                animationDelay: `${index * 150}ms`,
+                animation: 'fadeInUp 0.8s ease-out forwards'
+              }}
             >
               {/* Luxury Gold Accent Bar */}
               <div className="absolute top-0 left-0 w-full h-1 bg-luxury-gold"></div>
 
-              {/* Product Image Container */}
-              <div className="relative aspect-square overflow-hidden bg-premium-beige">
-                <img
-                  src={product.image}
-                  alt={product.title}
-                  className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-                  onError={(e) =>
-                    (e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+")
-                  }
-                />
+              {/* Product Image Container - Auto Moving Images */}
+              <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+                <div className="absolute inset-0 overflow-hidden">
+                  <img
+                    src={product.image}
+                    alt={product.title}
+                    className={`h-full w-full object-cover transition-all duration-1000 ease-out ${
+                      hoveredCard === product.id 
+                        ? 'scale-110 rotate-2' 
+                        : 'scale-100 rotate-0'
+                    }`}
+                    style={{
+                      animation: hoveredCard === product.id 
+                        ? 'floatImage 3s ease-in-out infinite' 
+                        : 'none'
+                    }}
+                    onError={(e) =>
+                      (e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+")
+                    }
+                  />
+                </div>
 
-                {/* Luxury overlay effects */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent group-hover:from-black/40 transition-all duration-500"></div>
+                {/* Premium Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent group-hover:from-black/30 transition-all duration-700"></div>
 
-                {/* Premium Badge */}
+                {/* Luxury Badge - Enhanced */}
                 {product.badge && (
-                  <span className="absolute top-3 left-3 text-xs px-2 py-1 bg-luxury-gold text-black font-semibold uppercase  group-hover:bg-black group-hover:text-luxury-gold transition-all duration-300">
+                  <span className="absolute top-4 left-4 text-xs px-3 py-1.5 bg-white/90 backdrop-blur-sm text-gray-900 font-light uppercase tracking-widest group-hover:bg-luxury-gold group-hover:text-white transition-all duration-500 transform group-hover:scale-105">
                     {product.badge}
                   </span>
                 )}
 
-                {/* Luxury border overlay */}
-                <div className="absolute inset-0 border-2 border-transparent group-hover:border-luxury-gold/30 transition-all duration-500"></div>
+                {/* Premium Border Effect */}
+                <div className="absolute inset-0 border border-transparent group-hover:border-luxury-gold/40 transition-all duration-700"></div>
 
-                {/* Quick view button */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                  <button className="px-4 py-2 bg-luxury-gold text-black font-semibold text-xs uppercase  hover:bg-black hover:text-luxury-gold transition-all duration-300 transform hover:scale-105">
+                {/* Quick View Button - Enhanced */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500">
+                  <button className="px-6 py-3 bg-white/95 backdrop-blur-sm text-gray-900 font-light text-xs uppercase tracking-widest hover:bg-luxury-gold hover:text-white transition-all duration-500 transform hover:scale-105 shadow-lg">
                     Quick View
                   </button>
                 </div>
+
+                {/* Floating Elements */}
+                <div className="absolute top-4 right-4 w-2 h-2 bg-luxury-gold/60 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-700 animate-pulse"></div>
+                <div className="absolute bottom-4 right-4 w-1 h-1 bg-luxury-gold/40 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-700 animate-pulse" style={{animationDelay: '0.5s'}}></div>
               </div>
 
-              {/* Product Details */}
-              <div className="p-2 sm:p-3 md:p-4 flex flex-col flex-1 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-500 ease-out font-['Helvetica_Neue','Helvetica',sans-serif] group">
+              {/* Product Details - Premium Typography */}
+              <div className="p-4 sm:p-5 md:p-6 flex flex-col flex-1 bg-white/95 backdrop-blur-sm border-t border-gray-100/50">
 
-                {/* Product Info */}
-                <div className="mb-2 sm:mb-3 flex-1">
-                  <h3 className="text-gray-900 font-semibold text-[11px] sm:text-xs md:text-sm tracking-tight uppercase leading-snug line-clamp-2 min-h-[2rem] sm:min-h-[2.2rem] transition-colors duration-300 group-hover:text-[#ea5430]">
+                {/* Product Info - Enhanced */}
+                <div className="mb-4 flex-1">
+                  <h3 className="text-gray-900 font-light text-sm sm:text-base md:text-lg tracking-wide uppercase leading-relaxed line-clamp-2 min-h-[2.5rem] transition-colors duration-500 group-hover:text-luxury-gold">
                     {product.title}
                   </h3>
-                  <p className="text-gray-500 text-[10px] sm:text-xs  italic line-clamp-1 mt-1">
+                  <p className="text-gray-500 text-xs sm:text-sm font-light italic line-clamp-1 mt-2 tracking-wide">
                     {product.category}
                   </p>
                 </div>
 
-                {/* Divider + CTA */}
-                <div className="mt-auto pt-3 border-t border-gray-200">
+                {/* Premium Divider + CTA */}
+                <div className="mt-auto pt-4 border-t border-gray-200/50">
                   <div className="flex items-center justify-between">
-                    {/* Optional Price */}
-                    {/* <span className="text-gray-900 font-semibold text-xs sm:text-sm lg:text-base">
-        ₹{product.price}
-      </span> */}
-
-                    <div className="text-[#c8a45d] text-[9px] sm:text-[10px] uppercase  group-hover:text-[#ea5430] transition-all duration-300 ease-in flex items-center gap-1">
-                      View Details
-                      <span className="translate-x-0 group-hover:translate-x-1 transition-transform duration-300">→</span>
+                    <div className="text-luxury-gold text-xs sm:text-sm uppercase font-light tracking-widest group-hover:text-gray-900 transition-all duration-500 ease-in-out flex items-center gap-2">
+                      <span>Explore</span>
+                      <span className="translate-x-0 group-hover:translate-x-1 transition-transform duration-500">→</span>
                     </div>
                   </div>
                 </div>
@@ -177,17 +198,48 @@ const TrendingNewArrivals = () => {
         </div>
       )}
 
-      {/* Luxury Call-to-Action */}
+      {/* Premium Call-to-Action */}
       {displayProducts.length > 0 && (
-        <div className="text-center mt-12 md:mt-16">
+        <div className="text-center mt-16 md:mt-20">
           <button
             onClick={() => navigate('/products')}
-            className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-black to-text-dark text-white font-semibold text-sm sm:text-base uppercase  hover:bg-luxury-gold hover:text-white transition-all duration-500 transform hover:scale-105 border border-black hover:border-luxury-gold shadow-md hover:shadow-lg"
+            className="px-8 sm:px-12 py-4 sm:py-5 bg-white/95 backdrop-blur-sm text-gray-900 font-light text-sm sm:text-base uppercase tracking-widest hover:bg-luxury-gold hover:text-white transition-all duration-700 transform hover:scale-105 border border-gray-200 hover:border-luxury-gold shadow-lg hover:shadow-2xl"
           >
-            View All Products
+            Discover Collection
           </button>
         </div>
       )}
+
+      {/* Premium Animations CSS */}
+      <style jsx>{`
+        @keyframes fadeInUp {
+          0% {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes floatImage {
+          0%, 100% {
+            transform: translateY(0px) rotate(0deg);
+          }
+          50% {
+            transform: translateY(-10px) rotate(1deg);
+          }
+        }
+        
+        .animate-fadeInUp {
+          animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        .animate-floatImage {
+          animation: floatImage 3s ease-in-out infinite;
+        }
+      `}</style>
     </section>
   );
 };
