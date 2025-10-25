@@ -59,7 +59,7 @@ console.log(passedProducts,"passed")
       { id: "Loungewear", name: "Loungewear" },
       { id: "Homewear", name: "Homewear" },
       { id: "Accessories", name: "Accessories" },
-      { id: "PetAccessories", name: "Pet Accessories" },
+      { id: "PetWear", name: "Pet Wear" },
     ],
     subCategories: {
       sleepwear: [
@@ -81,6 +81,12 @@ console.log(passedProducts,"passed")
         { id: "slippers", name: "Slippers" },
         { id: "scrunchies", name: "Hair Scrunchies" },
         { id: "eye-masks", name: "Eye Masks" },
+        { id: "pet-accessories", name: "Pet Accessories" },
+      ],
+      petwear: [
+        { id: "pet-clothing", name: "Pet Clothing" },
+        { id: "pet-sleepwear", name: "Pet Sleepwear" },
+        { id: "pet-loungewear", name: "Pet Loungewear" },
       ],
     },
     sortOptions: [

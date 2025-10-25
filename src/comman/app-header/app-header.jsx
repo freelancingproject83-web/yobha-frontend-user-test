@@ -38,7 +38,7 @@ const collectionItems = [
   { label: t("navbar.collectionsItems.sleepwear." + i18n.language), nav: "Sleepwear" },
   { label: t("navbar.collectionsItems.loungewear." + i18n.language), nav: "Loungewear" },
   { label: t("navbar.collectionsItems.homewear." + i18n.language), nav: "Homewear" },
-  { label: t("navbar.collectionsItems.petAccessories." + i18n.language), nav: "PetAccessories" },
+  { label: t("navbar.collectionsItems.petWear." + i18n.language), nav: "PetWear" },
 ];
 
 const accessoriesItems = [
@@ -49,6 +49,7 @@ const accessoriesItems = [
   { label: "Cushions", nav: "cushions" },
   { label: "Bathrobe", nav: "bathrobe" },
   { label: "Towels", nav: "towels" },
+  { label: t("navbar.collectionsItems.petAccessories." + i18n.language), nav: "petaccessories" },
 ];
 
   // Check authentication status
@@ -460,10 +461,11 @@ const accessoriesItems = [
             ) : (
                <Link
                  to="/login"
-                 className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-luxury-gold transition-all duration-300 rounded-full hover:bg-luxury-gold/10"
+                 className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:text-gray-900 transition-all duration-500 rounded-full hover:bg-luxury-gold/10"
                  title={t("navbar.account.login." + i18n.language)}
                >
                  <User size={18} className="md:w-5 md:h-5" strokeWidth={1.5} />
+                 <span className="hidden sm:inline font-light text-xs md:text-sm tracking-widest uppercase">{t("navbar.account.login." + i18n.language)}</span>
                </Link>
             )}
 
@@ -484,14 +486,15 @@ const accessoriesItems = [
               )}
             </Link>
 
-             {/* Logout Icon - Luxury Design */}
+             {/* Logout Button - Luxury Design */}
              {isAuthenticated && (
                <button
                  onClick={handleLogout}
-                 className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-luxury-gold transition-all duration-300 rounded-full hover:bg-luxury-gold/10"
-                 title="Logout"
+                 className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:text-gray-900 transition-all duration-500 rounded-full hover:bg-luxury-gold/10"
+                 title={t("navbar.account.logout." + i18n.language)}
                >
                  <LogOut size={16} className="md:w-4 md:h-4" strokeWidth={1.5} />
+                 <span className="hidden sm:inline font-light text-xs md:text-sm tracking-widest uppercase">{t("navbar.account.logout." + i18n.language)}</span>
                </button>
              )}
 

@@ -94,7 +94,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen bg-premium-cream">
+    <div className="min-h-screen bg-premium-cream lg:pt-6 md:pt-6">
       {/* Hero Section */}
       <section className="relative py-2 bg-gradient-to-br from-premium-beige via-premium-cream to-premium-warm-white overflow-hidden">
         <div className="absolute inset-0 opacity-5">
@@ -208,8 +208,7 @@ const Contact = () => {
                     <label className="block text-sm font-semibold text-black uppercase tracking-wide mb-2 sm:mb-3">
                       Subject *
                     </label>
-                    <input
-                      type="text"
+                    <select
                       name="subject"
                       value={formData.subject}
                       onChange={handleInputChange}
@@ -217,8 +216,14 @@ const Contact = () => {
                         ? 'border-red-500 bg-red-50'
                         : 'border-gray-300 focus:border-luxury-gold hover:border-gray-400'
                         }`}
-                      placeholder="What is this about?"
-                    />
+                    >
+                      <option value="">Select a subject</option>
+                      <option value="Sale">Sale</option>
+                      <option value="Return">Return</option>
+                      <option value="Exchange">Exchange</option>
+                      <option value="Delivery">Delivery</option>
+                      <option value="Buy Back Program">Buy Back Program</option>
+                    </select>
                     {formErrors.subject && <p className="text-xs sm:text-sm text-red-500 mt-1 sm:mt-2">{formErrors.subject}</p>}
                   </div>
                 </div>

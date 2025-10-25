@@ -22,23 +22,23 @@ const About = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Content */}
           <div className="space-y-6">
-            <p className="text-text-dark text-base leading-relaxed font-light">
-              YOBHA is an international luxury sleepwear and loungewear brand redefining the essence of modern comfort.
-            </p>
-            
-            <p className="text-text-dark text-base leading-relaxed font-light">
-              Born from the idea that tranquility is the new form of luxury, YOBHA blends timeless silhouettes, serene palettes, and refined fabrics into an experience of effortless sophistication.
-            </p>
-            
-            <p className="text-text-dark text-base leading-relaxed font-light">
-              Every piece is designed to flow with your rhythm — from peaceful nights to slow, intentional mornings.
-            </p>
-
-            <div className="border-l-4 border-luxury-gold pl-4 py-2">
-              <p className="text-text-dark text-base leading-relaxed font-light italic">
-                "Rooted in calm minimalism and soft structure, our creations celebrate the art of being at ease — feeling beautiful, composed, and entirely yourself."
-              </p>
+            <div className="text-center lg:text-left">
+              <h2 className="text-4xl md:text-5xl font-bold text-black uppercase tracking-widest mb-6">
+                YOBHA
+              </h2>
             </div>
+            
+            <p className="text-text-dark text-base leading-relaxed font-light">
+              "We create pieces that honor the quiet beauty of comfort — refined essentials that bring peace and elegance to life's everyday rituals.
+            </p>
+            
+            <p className="text-text-dark text-base leading-relaxed font-light">
+              With a design-first approach and uncompromising attention to detail, YOBHA blends luxury craftsmanship with effortless wearability. Each piece is thoughtfully made to celebrate stillness, softness, and the art of being at home — within yourself and your space.
+            </p>
+            
+            <p className="text-text-dark text-base leading-relaxed font-light">
+              Guided by conscious creation and timeless design, YOBHA stands for a new kind of luxury — one that feels as good as it looks, and endures beyond seasons."
+            </p>
           </div>
 
           {/* Visual Element - Compact */}
