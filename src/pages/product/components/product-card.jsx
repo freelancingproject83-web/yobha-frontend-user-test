@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Heart, ChevronLeft, ChevronRight } from "lucide-react";
-import { addToWishlist } from "../../../service/wishlist";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 /**
  * ProductCard Component - Luxury Gucci-inspired design
@@ -25,8 +24,11 @@ import { addToWishlist } from "../../../service/wishlist";
  */
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const cardRef = useRef(null);
+  const autoCarouselRef = useRef(null);
 
   // Safe data extraction with null checks
   const productId = product?.id || '';
@@ -49,32 +51,6 @@ const ProductCard = ({ product }) => {
       navigate(`/productDetail/${productId}`);
     }
   };
-  const handleAddToWishlist = async (productId) => {
-    const payload = {
-      "productId": "PID10001",
-      "variantSku": "PID10001-NAV-S",
-      "desiredQuantity": 1,
-      "desiredSize": "S",
-      "desiredColor": "Navy Blue",
-      "notifyWhenBackInStock": true,
-      "note": "Buy during Diwali sale"
-    }
-
-    try {
-      const result = await addToWishlist(productId, payload);
-      console.log("Added to wishlist:", result);
-      alert("Product added to wishlist!");
-    } catch (err) {
-      console.error("Failed to add to wishlist:", err);
-      alert("Failed to add to wishlist");
-    }
-  };
-  const handleWishlist = (e) => {
-    // e.stopPropagation();
-    // setIsWishlisted(!isWishlisted);
-    handleAddToWishlist(e)
-    // TODO: Add to wishlist API call
-  };
 
   const nextImage = (e) => {
     e.stopPropagation();
@@ -91,14 +67,63 @@ const ProductCard = ({ product }) => {
     setCurrentImageIndex(index);
   };
 
+  // Auto carousel effect
+  useEffect(() => {
+    if (hasMultipleImages && isHovered) {
+      autoCarouselRef.current = setInterval(() => {
+        setCurrentImageIndex((prev) => (prev + 1) % productImages.length);
+      }, 3000); // Change image every 3 seconds
+    } else {
+      if (autoCarouselRef.current) {
+        clearInterval(autoCarouselRef.current);
+      }
+    }
+
+    return () => {
+      if (autoCarouselRef.current) {
+        clearInterval(autoCarouselRef.current);
+      }
+    };
+  }, [isHovered, hasMultipleImages, productImages.length]);
+
+  // Intersection Observer for fade-in animation
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.1, rootMargin: '50px' }
+    );
+
+    if (cardRef.current) {
+      observer.observe(cardRef.current);
+    }
+
+    return () => {
+      if (cardRef.current) {
+        observer.unobserve(cardRef.current);
+      }
+    };
+  }, []);
+
   return (
     <div
+      ref={cardRef}
       onClick={handleCardClick}
-      className="group relative bg-white border border-text-light/20 overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer flex flex-col"
-      style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={`group relative bg-white border-0 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 ease-out cursor-pointer flex flex-col backdrop-blur-sm transform ${
+        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+      } hover:-translate-y-2 hover:scale-[1.02]`}
+      style={{ 
+        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+        transition: 'all 0.7s cubic-bezier(0.4, 0, 0.2, 1)'
+      }}
     >
-      {/* Image Container */}
-      <div className="relative aspect-square overflow-hidden bg-premium-beige">
+      {/* Image Container - Luxury Design */}
+      <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-50 group/image shadow-inner">
         {/* Carousel Images */}
         <div className="relative w-full h-full">
           {productImages.map((img, index) => (
@@ -106,10 +131,14 @@ const ProductCard = ({ product }) => {
               key={index}
               src={img}
               alt={`${productName} - ${index + 1}`}
-              className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 ${index === currentImageIndex
-                ? 'opacity-100'
-                : 'opacity-0'
-                } group-hover:scale-105`}
+              className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-out ${
+                index === currentImageIndex
+                  ? 'opacity-100 scale-100'
+                  : 'opacity-0 scale-105'
+              } group-hover:scale-110 group-hover/image:scale-105`}
+              style={{
+                transition: 'all 1s cubic-bezier(0.4, 0, 0.2, 1)'
+              }}
               onError={(e) => {
                 e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDQwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMjAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+';
               }}
@@ -117,55 +146,45 @@ const ProductCard = ({ product }) => {
           ))}
         </div>
 
-        {/* Navigation Arrows - Show on hover if multiple images */}
+        {/* Elegant Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+
+        {/* Navigation Arrows - Premium Design */}
         {hasMultipleImages && (
           <>
             <button
               onClick={prevImage}
-              className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 bg-white/90 backdrop-blur-sm shadow-sm opacity-0 group-hover:opacity-100 hover:bg-white transition-all z-20"
+              className="absolute left-3 top-1/2 -translate-y-1/2 p-2.5 bg-white/95 backdrop-blur-md shadow-xl opacity-0 group-hover:opacity-100 hover:bg-white transition-all duration-500 z-20 rounded-full border border-gray-100 hover:scale-110 hover:shadow-2xl transform -translate-x-2 group-hover:translate-x-0"
+              style={{ transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)' }}
               aria-label="Previous image"
             >
-              <ChevronLeft size={16} className="text-black" />
+              <ChevronLeft size={18} className="text-gray-700 transition-transform duration-300 hover:scale-110" />
             </button>
             <button
               onClick={nextImage}
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-white/90 backdrop-blur-sm shadow-sm opacity-0 group-hover:opacity-100 hover:bg-white transition-all z-20"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-2.5 bg-white/95 backdrop-blur-md shadow-xl opacity-0 group-hover:opacity-100 hover:bg-white transition-all duration-500 z-20 rounded-full border border-gray-100 hover:scale-110 hover:shadow-2xl transform translate-x-2 group-hover:translate-x-0"
+              style={{ transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)' }}
               aria-label="Next image"
             >
-              <ChevronRight size={16} className="text-black" />
+              <ChevronRight size={18} className="text-gray-700 transition-transform duration-300 hover:scale-110" />
             </button>
           </>
         )}
 
-        {/* Wishlist Icon */}
-        {/* <button
-          onClick={() => handleWishlist(product.id)}
-          className={`absolute top-3 right-3 z-10 p-2 backdrop-blur-sm transition-all duration-300 ${isWishlisted
-              ? 'bg-black'
-              : 'bg-white/90 hover:bg-white'
-            }`}
-          aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
-        >
-          <Heart
-            size={16}
-            className={`transition-all ${isWishlisted
-                ? 'text-white fill-white'
-                : 'text-black'
-              }`}
-          />
-        </button> */}
 
-        {/* Image Indicator Dots */}
+        {/* Image Indicator Dots - Refined Design */}
         {hasMultipleImages && (
-          <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1 z-10">
+          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-10 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0">
             {productImages.map((_, index) => (
               <button
                 key={index}
                 onClick={(e) => goToImage(index, e)}
-                className={`h-1 rounded-full transition-all duration-300 ${index === currentImageIndex
-                  ? 'w-6 bg-black'
-                  : 'w-1 bg-black/30 hover:bg-black/60'
-                  }`}
+                className={`h-1.5 rounded-full transition-all duration-500 hover:scale-125 ${
+                  index === currentImageIndex
+                    ? 'w-8 bg-white shadow-lg scale-110'
+                    : 'w-1.5 bg-white/50 hover:bg-white/80 hover:scale-110'
+                }`}
+                style={{ transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)' }}
                 aria-label={`Go to image ${index + 1}`}
               />
             ))}
@@ -173,31 +192,27 @@ const ProductCard = ({ product }) => {
         )}
       </div>
 
-      {/* Content */}
-    <div className="p-5 flex flex-col flex-1 bg-white rounded-t-2xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 ease-out font-['Helvetica_Neue','Helvetica',sans-serif]">
+      {/* Content - Luxury Typography */}
+      <div className="p-4 sm:p-6 flex flex-col flex-1 bg-white group/content shadow-sm">
+        {/* Product Name - Elegant Typography with Fixed Height */}
+        <div className="h-12 sm:h-14 mb-3 sm:mb-4 flex items-start overflow-hidden">
+          <h3 className="text-gray-900 font-light text-sm sm:text-lg line-clamp-2 tracking-wide uppercase group-hover:text-[#ea5430] transition-all duration-700 leading-relaxed transform group-hover:translate-x-1">
+            {productName}
+          </h3>
+        </div>
 
-  {/* Product Name */}
-  <h3 className="text-gray-900 font-semibold text-lg mb-3 line-clamp-2 tracking-tight uppercase group-hover:text-[#ea5430] transition-colors duration-300">
-    {productName}
-  </h3>
+        {/* Size Information - Minimal Design with Flexible Height */}
+        <div className="min-h-[1.25rem] sm:min-h-[1.5rem] flex items-center">
+          {availableSizes.length > 0 && (
+            <p className="text-gray-500 text-xs tracking-widest uppercase font-light transition-all duration-700 transform group-hover:translate-x-1 group-hover:text-gray-700 leading-tight">
+              Sizes: <span className="text-gray-700 font-medium transition-colors duration-500 group-hover:text-[#ea5430]">{availableSizes.join(', ')}</span>
+            </p>
+          )}
+        </div>
 
-  {/* Available Options */}
-  <div className="mb-4 space-y-1">
-    {availableColors.length > 0 && (
-      <p className="text-gray-500 text-xs tracking-wider uppercase">
-        {availableColors.length} Color{availableColors.length !== 1 ? 's' : ''}
-      </p>
-    )}
-    {availableSizes.length > 0 && (
-      <p className="text-gray-500 text-xs tracking-wider uppercase">
-        Sizes: <span className="text-gray-700 font-medium">{availableSizes.join(', ')}</span>
-      </p>
-    )}
-  </div>
-
-
-</div>
-
+        {/* Subtle shimmer effect on hover */}
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out opacity-0 group-hover:opacity-100"></div>
+      </div>
     </div>
   );
 };

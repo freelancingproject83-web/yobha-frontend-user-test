@@ -25,6 +25,7 @@ const ProductsPage = () => {
 console.log(passedProducts,"passed")
   // UI State
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [showMobileSort, setShowMobileSort] = useState(false);
   const [openAccordion, setOpenAccordion] = useState("categories");
 
   // Filter State
@@ -309,35 +310,6 @@ useEffect(() => {
         </div>
       </FilterAccordion> */}
 
-      {/* Sort */}
-      <FilterAccordion
-        title="Sort By"
-        isOpen={openAccordion === "sort"}
-        onToggle={() => toggleAccordion("sort")}
-      >
-        <div className="space-y-3">
-          {filterOptions.sortOptions.map((option) => (
-            <label
-              key={option.id}
-              className="flex items-center cursor-pointer group"
-            >
-              <input
-                type="radio"
-                name="sortBy"
-                checked={filters.sortBy === option.id}
-                onChange={() => updateFilter('sortBy', option.id)}
-                className="w-4 h-4 border border-text-light text-black focus:ring-1 focus:ring-black cursor-pointer"
-              />
-              <span className={`ml-3 text-sm tracking-wide transition-colors ${filters.sortBy === option.id
-                ? "text-black font-medium"
-                : "text-text-medium group-hover:text-black"
-                }`}>
-                {option.name}
-              </span>
-            </label>
-          ))}
-        </div>
-      </FilterAccordion>
       <FilterAccordion
         title="Price Range"
         isOpen={openAccordion === "price"}
@@ -463,34 +435,144 @@ useEffect(() => {
         </div>
       )}
 
+      {/* Mobile Sort Modal - Bottom Sheet Style */}
+      {showMobileSort && (
+        <div className="fixed inset-0 z-50">
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setShowMobileSort(false)}
+          ></div>
+
+          <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-2xl animate-slideUp">
+            <div className="px-6 py-5 border-b border-text-light/20">
+              <div className="flex items-center justify-between">
+                <h2 className="font-semibold text-black uppercase tracking-wider text-sm">
+                  Sort By
+                </h2>
+                <button
+                  onClick={() => setShowMobileSort(false)}
+                  className="text-black hover:text-text-medium transition-colors"
+                  aria-label="Close sort"
+                >
+                  <X size={24} strokeWidth={1.5} />
+                </button>
+              </div>
+            </div>
+            
+            <div className="px-6 py-4">
+              <div className="space-y-1">
+                {filterOptions.sortOptions.map((option) => (
+                  <button
+                    key={option.id}
+                    onClick={() => {
+                      updateFilter('sortBy', option.id);
+                      setShowMobileSort(false);
+                    }}
+                    className={`w-full text-left py-4 px-0 text-sm font-medium transition-colors ${
+                      filters.sortBy === option.id
+                        ? 'text-black'
+                        : 'text-text-medium hover:text-black'
+                    }`}
+                  >
+                    {option.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Content */}
       <main className="max-w-[1600px] mx-auto px-6 md:px-8 lg:px-12 py-12">
 
         {/* Page Header */}
-        <div className="mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-black uppercase tracking-wide mb-3">
+        <div className="mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-2">
             {category
               ? `${category.replace(/([A-Z])/g, " $1").trim()} Collection`
               : "All Products"}
           </h1>
-          <p className="text-text-medium text-base md:text-lg">
+          <p className="text-text-medium text-sm md:text-base">
             Timeless essentials crafted for serene nights and refined comfort
           </p>
         </div>
 
-        {/* Filter Button & Product Count */}
-        <div className="flex items-center justify-between mb-8 pb-4 border-b border-text-light/20">
-          <button
-            onClick={() => setShowMobileFilters(true)}
-            className="flex items-center gap-2 text-black hover:text-text-medium transition-colors group"
-          >
-            <SlidersHorizontal size={18} strokeWidth={1.5} />
-            <span className="uppercase text-sm tracking-wider font-medium border-b-2 border-black group-hover:border-text-medium transition-colors">
-              Filters
-            </span>
-          </button>
-          <div className="text-text-medium text-sm uppercase tracking-wider">
-            {products.length} Product{products.length !== 1 ? 's' : ''}
+        {/* Filter Button, Sorting & Product Count */}
+        <div className="mb-8 pb-4 border-b border-text-light/20">
+          {/* Desktop/Tablet Layout */}
+          <div className="hidden sm:flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              {/* Filter Button */}
+              <button
+                onClick={() => setShowMobileFilters(true)}
+                className="flex items-center gap-2 text-black hover:text-text-medium transition-colors group"
+              >
+                <SlidersHorizontal size={18} strokeWidth={1.5} />
+                <span className="uppercase text-sm tracking-wider font-medium border-b-2 border-black group-hover:border-text-medium transition-colors">
+                  Filters
+                </span>
+              </button>
+
+              {/* Sorting Options - Desktop/Tablet */}
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-medium text-black uppercase tracking-wider">Sort By:</span>
+                <div className="flex flex-wrap gap-2">
+                  {filterOptions.sortOptions.map((option) => (
+                    <button
+                      key={option.id}
+                      onClick={() => updateFilter('sortBy', option.id)}
+                      className={`px-3 py-1.5 text-xs uppercase tracking-wider transition-all duration-200 ${
+                        filters.sortBy === option.id
+                          ? 'bg-black text-white'
+                          : 'border border-text-light text-black hover:bg-black hover:text-white'
+                      }`}
+                    >
+                      {option.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="text-text-medium text-sm uppercase tracking-wider">
+              {products.length} Product{products.length !== 1 ? 's' : ''}
+            </div>
+          </div>
+
+          {/* Mobile Layout */}
+          <div className="sm:hidden space-y-6">
+            {/* Mobile Filter & Sort Buttons */}
+            <div className="flex items-center gap-6">
+              {/* Mobile Filter Button */}
+              <button
+                onClick={() => setShowMobileFilters(true)}
+                className="flex items-center gap-2 text-black hover:text-text-medium transition-colors group"
+              >
+                <SlidersHorizontal size={18} strokeWidth={1.5} />
+                <span className="uppercase text-sm tracking-wider font-medium border-b-2 border-black group-hover:border-text-medium transition-colors">
+                  Filters
+                </span>
+              </button>
+
+              {/* Mobile Sort Button */}
+              <button
+                onClick={() => setShowMobileSort(true)}
+                className="flex items-center gap-2 text-black hover:text-text-medium transition-colors group"
+              >
+                <span className="text-sm font-medium text-black uppercase tracking-wider">
+                  Sort by {filterOptions.sortOptions.find(opt => opt.id === filters.sortBy)?.name || 'Featured'}
+                </span>
+                <ChevronDown size={16} strokeWidth={1.5} />
+              </button>
+            </div>
+
+            {/* Mobile Product Count - Centered */}
+            <div className="text-center">
+              <div className="text-text-medium text-sm uppercase tracking-wider">
+                {products.length} Product{products.length !== 1 ? 's' : ''}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -532,6 +614,7 @@ useEffect(() => {
           </div>
         )}
 
+
         {/* Products Grid */}
         {isLoading ? (
           <div className="flex justify-center items-center py-20">
@@ -541,7 +624,7 @@ useEffect(() => {
             </div>
           </div>
         ) : products.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -583,6 +666,18 @@ useEffect(() => {
         }
         .animate-slideInLeft {
           animation: slideInLeft 0.3s ease-out;
+        }
+        
+        @keyframes slideUp {
+          from {
+            transform: translateY(100%);
+          }
+          to {
+            transform: translateY(0);
+          }
+        }
+        .animate-slideUp {
+          animation: slideUp 0.3s ease-out;
         }
         
         @keyframes fadeIn {
