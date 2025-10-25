@@ -564,8 +564,8 @@ const accessoriesItems = [
             onClick={() => setSidebarOpen(false)}
           ></div>
 
-          <div className="relative w-72 bg-white shadow-2xl animate-slideInLeft">
-            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-300">
+          <div className="relative w-72 h-screen bg-white shadow-2xl animate-slideInLeft border-r border-gray-200 flex flex-col">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
               <img
                 src={logoImage}
                 alt="YOBHA Logo"
@@ -579,7 +579,7 @@ const accessoriesItems = [
               </button>
             </div>
 
-            <nav className="flex flex-col p-6 space-y-2 text-black text-base">
+            <nav className="flex flex-col flex-1 px-6 py-4 space-y-2 text-black text-base bg-white">
               {/* Main Navigation */}
               {menuItems.map((item) => (
                 <div key={item.nav} className="w-full">

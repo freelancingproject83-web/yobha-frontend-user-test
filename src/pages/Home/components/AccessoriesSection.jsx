@@ -110,9 +110,9 @@ const AccessoriesSection = () => {
       </div>
 
       {/* Premium Accessories Showcase - Enhanced Mobile Responsiveness */}
-        <div className="space-y-4 md:space-y-6 lg:space-y-8">
+        <div className="space-y-1 md:space-y-1.5 lg:space-y-2">
           {/* Featured Accessories - Large Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10 lg:gap-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5 sm:gap-2 md:gap-2.5 lg:gap-3">
           {accessoriesCategories.filter(cat => cat.featured).map((category, index) => (
             <article
               key={category.id}
@@ -120,6 +120,12 @@ const AccessoriesSection = () => {
               onClick={() => handleNavigate(category.id)}
               onMouseEnter={() => setHoveredCard(category.id)}
               onMouseLeave={() => setHoveredCard(null)}
+              onTouchStart={(e) => {
+                e.preventDefault();
+                setHoveredCard(category.id);
+              }}
+              onTouchEnd={() => setHoveredCard(null)}
+              onTouchCancel={() => setHoveredCard(null)}
               style={{
                 animationDelay: `${index * 200}ms`,
                 animation: 'fadeInUp 0.8s ease-out forwards'
@@ -160,7 +166,7 @@ const AccessoriesSection = () => {
                   <div className="absolute bottom-4 right-4 w-1 h-1 bg-luxury-gold/40 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-700 animate-pulse" style={{animationDelay: '0.5s'}}></div>
                   
                   {/* Content positioned at bottom with premium styling */}
-                  <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 md:p-8">
+                  <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-2.5 md:p-3">
                     <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-light text-white uppercase mb-2 sm:mb-3 group-hover:scale-105 transition-transform duration-500 tracking-widest">
                       {category.title}
                     </div>
@@ -178,7 +184,7 @@ const AccessoriesSection = () => {
         </div>
 
         {/* Regular Accessories - Grid Layout */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1 sm:gap-1.5 md:gap-2 lg:gap-2.5">
           {accessoriesCategories.filter(cat => !cat.featured).map((category, index) => (
             <article
               key={category.id}
@@ -186,6 +192,12 @@ const AccessoriesSection = () => {
               onClick={() => handleNavigate(category.id)}
               onMouseEnter={() => setHoveredCard(category.id)}
               onMouseLeave={() => setHoveredCard(null)}
+              onTouchStart={(e) => {
+                e.preventDefault();
+                setHoveredCard(category.id);
+              }}
+              onTouchEnd={() => setHoveredCard(null)}
+              onTouchCancel={() => setHoveredCard(null)}
               style={{
                 animationDelay: `${(index + 3) * 150}ms`,
                 animation: 'fadeInUp 0.8s ease-out forwards'
@@ -226,7 +238,7 @@ const AccessoriesSection = () => {
                   <div className="absolute bottom-2 right-2 w-1 h-1 bg-luxury-gold/40 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-700 animate-pulse" style={{animationDelay: '0.5s'}}></div>
                   
                   {/* Content positioned at bottom with premium styling */}
-                  <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3 md:p-4">
+                  <div className="absolute bottom-0 left-0 right-0 p-1.5 sm:p-1.5 md:p-2">
                     <div className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-white uppercase mb-1 group-hover:scale-105 transition-transform duration-500 tracking-widest">
                       {category.title}
                     </div>
@@ -260,6 +272,17 @@ const AccessoriesSection = () => {
           }
           50% {
             transform: translateY(-10px) rotate(1deg);
+          }
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+          .group:active {
+            transform: scale(0.98) !important;
+          }
+          
+          .group:active img {
+            animation: floatImage 2s ease-in-out infinite !important;
           }
         }
         

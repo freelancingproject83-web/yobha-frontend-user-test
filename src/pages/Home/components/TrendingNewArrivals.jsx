@@ -6,6 +6,7 @@ const TrendingNewArrivals = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState([]);
   const [hoveredCard, setHoveredCard] = useState(null);
+  const [imageIndices, setImageIndices] = useState({});
   const navigate = useNavigate();
   const sectionRef = useRef(null);
 
@@ -13,6 +14,38 @@ const TrendingNewArrivals = () => {
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  // Auto-rotate images for each product
+  useEffect(() => {
+    if (products.length === 0) return;
+    
+    const interval = setInterval(() => {
+      setImageIndices(prev => {
+        const newIndices = { ...prev };
+        // Update indices for all products that have multiple images
+        products.forEach(product => {
+          if (product.images && product.images.length > 1) {
+            const currentIndex = prev[product.id] || 0;
+            newIndices[product.id] = (currentIndex + 1) % product.images.length;
+          }
+        });
+        return newIndices;
+      });
+    }, 3000); // Change image every 3 seconds
+
+    return () => clearInterval(interval);
+  }, [products]);
+
+  // Initialize image indices when products change
+  useEffect(() => {
+    if (products.length > 0) {
+      const initialIndices = {};
+      products.forEach(product => {
+        initialIndices[product.id] = 0;
+      });
+      setImageIndices(initialIndices);
+    }
+  }, [products]);
 
   const fetchProducts = async () => {
     setIsLoading(true);
@@ -31,7 +64,10 @@ const TrendingNewArrivals = () => {
 
       const response = await getFilteredProducts(payload);
       if (response && response.success && response.data) {
-        setProducts(response.data.items || []);
+        const fetchedProducts = response.data.items || [];
+        setProducts(fetchedProducts);
+        
+        // Initialize image indices for carousel will be done in displayProducts useEffect
       } else {
         setProducts([]);
       }
@@ -54,6 +90,7 @@ const TrendingNewArrivals = () => {
         title: p.name || "Untitled Product",
         price: p.price ? `₹${p.price.toLocaleString("en-IN")}` : "Price not available",
         image: p.images?.[0] || "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk5vIEltYWdlPC90ZXh0Pgo8L3N2Zz4=",
+        images: p.images || [], // Preserve the full images array for carousel
         badge: p.productMainCategory || "New",
         slug: p.productId,
         category: p.category || "Luxury Collection"
@@ -118,23 +155,79 @@ const TrendingNewArrivals = () => {
               {/* Product Image Container - Auto Moving Images */}
               <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
                 <div className="absolute inset-0 overflow-hidden">
-                  <img
-                    src={product.image}
-                    alt={product.title}
-                    className={`h-full w-full object-cover transition-all duration-1000 ease-out ${
-                      hoveredCard === product.id 
-                        ? 'scale-110 rotate-2' 
-                        : 'scale-100 rotate-0'
-                    }`}
-                    style={{
-                      animation: hoveredCard === product.id 
-                        ? 'floatImage 3s ease-in-out infinite' 
-                        : 'none'
-                    }}
-                    onError={(e) =>
-                      (e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+")
-                    }
-                  />
+                  {/* Image Carousel - Show multiple images if available */}
+                  {(() => {
+                    // Find the original product data to get the full images array
+                    const originalProduct = products.find(p => p.id === product.id);
+                    const productImages = originalProduct?.images || product.images || [];
+                    return productImages.length > 1;
+                  })() ? (
+                    <div className="relative w-full h-full">
+                      {(() => {
+                        const originalProduct = products.find(p => p.id === product.id);
+                        const productImages = originalProduct?.images || product.images || [];
+                        return productImages;
+                      })().map((image, imgIndex) => (
+                        <img
+                          key={imgIndex}
+                          src={image}
+                          alt={`${product.title} - Image ${imgIndex + 1}`}
+                          className={`absolute inset-0 h-full w-full object-cover transition-all duration-1000 ease-out ${
+                            imageIndices[product.id] === imgIndex ? 'opacity-100' : 'opacity-0'
+                          } ${
+                            hoveredCard === product.id 
+                              ? 'scale-110 rotate-2' 
+                              : 'scale-100 rotate-0'
+                          }`}
+                          style={{
+                            animation: hoveredCard === product.id 
+                              ? 'floatImage 3s ease-in-out infinite' 
+                              : 'none'
+                          }}
+                          onError={(e) =>
+                            (e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+")
+                          }
+                        />
+                      ))}
+                      
+                      {/* Image Indicators */}
+                      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-1">
+                        {(() => {
+                          const originalProduct = products.find(p => p.id === product.id);
+                          const productImages = originalProduct?.images || product.images || [];
+                          return productImages;
+                        })().map((_, imgIndex) => (
+                          <div
+                            key={imgIndex}
+                            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                              imageIndices[product.id] === imgIndex 
+                                ? 'bg-white shadow-lg' 
+                                : 'bg-white/50'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    /* Single Image Fallback */
+                    <img
+                      src={product.image}
+                      alt={product.title}
+                      className={`h-full w-full object-cover transition-all duration-1000 ease-out ${
+                        hoveredCard === product.id 
+                          ? 'scale-110 rotate-2' 
+                          : 'scale-100 rotate-0'
+                      }`}
+                      style={{
+                        animation: hoveredCard === product.id 
+                          ? 'floatImage 3s ease-in-out infinite' 
+                          : 'none'
+                      }}
+                      onError={(e) =>
+                        (e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+")
+                      }
+                    />
+                  )}
                 </div>
 
                 {/* Premium Gradient Overlay */}

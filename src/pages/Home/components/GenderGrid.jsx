@@ -68,7 +68,7 @@ const GenderGrid = () => {
   };
 
   return (
-    <section 
+    <section
       ref={sectionRef}
       className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-gradient-to-br from-yellow-50/30 via-amber-50/20 to-orange-50/30 overflow-hidden"
       style={{ fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif" }}
@@ -96,10 +96,10 @@ const GenderGrid = () => {
       </div>
 
       {/* Responsive Grid */}
-        <div className="space-y-2 sm:space-y-0">
+        <div className="space-y-1 sm:space-y-0">
         {/* Mobile Layout - 2 Columns Grid */}
         <div className="block sm:hidden">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-1.5">
             {genderCategories.map((category, index) => {
               const slogans = {
                 large: "Step into elegance →",
@@ -113,6 +113,12 @@ const GenderGrid = () => {
                 onClick={() => handleNavigate(category.id)}
                 onMouseEnter={() => setHoveredCard(category.id)}
                 onMouseLeave={() => setHoveredCard(null)}
+                onTouchStart={(e) => {
+                  e.preventDefault();
+                  setHoveredCard(category.id);
+                }}
+                onTouchEnd={() => setHoveredCard(null)}
+                onTouchCancel={() => setHoveredCard(null)}
                 style={{
                   animationDelay: `${index * 150}ms`,
                   animation: 'fadeInUp 0.8s ease-out forwards'
@@ -178,7 +184,7 @@ const GenderGrid = () => {
 
         {/* Tablet Layout - 2x3 Grid */}
         <div className="hidden sm:block md:hidden">
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-2">
             {/* Large Cards - Full Width */}
             <article
               className="group relative overflow-hidden shadow-sm hover:shadow-2xl cursor-pointer transition-all duration-700 bg-white/95 backdrop-blur-sm border border-gray-100/50 col-span-2 transform hover:-translate-y-2"
@@ -429,9 +435,9 @@ const GenderGrid = () => {
 
         {/* Desktop Layout - Mixed Grid (2 + 4 columns) */}
         <div className="hidden md:block">
-          <div className="space-y-4">
+          <div className="space-y-2">
             {/* Row 1: Women & Men - 2 Columns */}
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-2 gap-2">
               {/* Women - Half Width Card */}
               <article
                 className="group relative overflow-hidden shadow-sm hover:shadow-2xl cursor-pointer transition-all duration-700 bg-white/95 backdrop-blur-sm border border-gray-100/50 flex flex-col transform hover:-translate-y-2"
@@ -540,7 +546,7 @@ const GenderGrid = () => {
             </div>
 
             {/* Row 2: Kids, Couple, Family, Pets - 4 Columns */}
-            <div className="grid grid-cols-4 gap-6">
+            <div className="grid grid-cols-4 gap-2">
               {/* Kids */}
               <article
                 className="group relative overflow-hidden shadow-sm hover:shadow-2xl cursor-pointer transition-all duration-700 bg-white/95 backdrop-blur-sm border border-gray-100/50 flex flex-col transform hover:-translate-y-2"
@@ -661,9 +667,9 @@ const GenderGrid = () => {
                 <div className="absolute top-0 left-0 w-full h-1 bg-luxury-gold"></div>
                 <div className="relative h-[250px] overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
                   <div className="absolute inset-0 overflow-hidden">
-                    <img
-                      src={FAMILY_IMAGE}
-                      alt="Family Collection"
+                  <img
+                    src={FAMILY_IMAGE}
+                    alt="Family Collection"
                       className={`h-full w-full object-cover transition-all duration-1000 ease-out ${
                         hoveredCard === "family" 
                           ? 'scale-110 rotate-1' 
@@ -714,9 +720,9 @@ const GenderGrid = () => {
                 <div className="absolute top-0 left-0 w-full h-1 bg-luxury-gold"></div>
                 <div className="relative h-[250px] overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
                   <div className="absolute inset-0 overflow-hidden">
-                    <img
-                      src={PET_IMAGE}
-                      alt="Pets Collection"
+                  <img
+                    src={PET_IMAGE}
+                    alt="Pets Collection"
                       className={`h-full w-full object-cover transition-all duration-1000 ease-out ${
                         hoveredCard === "pets" 
                           ? 'scale-110 rotate-1' 
@@ -777,6 +783,17 @@ const GenderGrid = () => {
           }
           50% {
             transform: translateY(-10px) rotate(1deg);
+          }
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+          .group:active {
+            transform: scale(0.98) !important;
+          }
+          
+          .group:active img {
+            animation: floatImage 2s ease-in-out infinite !important;
           }
         }
         
