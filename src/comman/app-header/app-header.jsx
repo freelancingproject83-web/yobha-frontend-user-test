@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { LogOut, Menu, X, User, Heart, Package, Search, ChevronDown, ChevronRight, Loader2 } from "lucide-react";
 import { BsBag } from "react-icons/bs";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { LocalStorageKeys } from "../../constants/localStorageKeys";
 import * as localStorageService from "../../service/localStorageService";
 import logoImage from "../../assets/yobhaLogo.png";
@@ -22,22 +22,33 @@ const HeaderWithSidebar = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [showSearchResults, setShowSearchResults] = useState(false);
+  const [showSecondaryHeader, setShowSecondaryHeader] = useState(false);
+  const [activeSecondaryMenu, setActiveSecondaryMenu] = useState(null);
   const searchRef = useRef(null);
+  const secondaryHeaderRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const menuItems = [
-  { label: t("navbar.menu.home." + i18n.language), nav: "Home" },
   { label: t("navbar.menu.collections." + i18n.language), nav: "Collections" },
-  { label: t("navbar.menu.about." + i18n.language), nav: "About" },
-  { label: t("navbar.menu.contact." + i18n.language), nav: "Contact" },
+  { label: t("navbar.menu.accessories." + i18n.language), nav: "Accessories" },
 ];
 
 const collectionItems = [
   { label: t("navbar.collectionsItems.sleepwear." + i18n.language), nav: "Sleepwear" },
   { label: t("navbar.collectionsItems.loungewear." + i18n.language), nav: "Loungewear" },
   { label: t("navbar.collectionsItems.homewear." + i18n.language), nav: "Homewear" },
-  { label: t("navbar.collectionsItems.accessories." + i18n.language), nav: "Accessories" },
   { label: t("navbar.collectionsItems.petAccessories." + i18n.language), nav: "PetAccessories" },
+];
+
+const accessoriesItems = [
+  { label: "Scrunchies", nav: "scrunchies" },
+  { label: "Socks", nav: "socks" },
+  { label: "Eye Masks", nav: "eyemasks" },
+  { label: "Headbands", nav: "headband" },
+  { label: "Cushions", nav: "cushions" },
+  { label: "Bathrobe", nav: "bathrobe" },
+  { label: "Towels", nav: "towels" },
 ];
 
   // Check authentication status
@@ -76,6 +87,12 @@ const collectionItems = [
     }
   }, [cartCount, prevCartCount, isInitialized]);
 
+  // Close secondary header when navigating to different routes
+  useEffect(() => {
+    setShowSecondaryHeader(false);
+    setActiveSecondaryMenu(null);
+  }, [location.pathname]);
+
   // Logout function
   const handleLogout = () => {
     localStorageService.clearAll(); // clear all keys
@@ -89,6 +106,55 @@ const collectionItems = [
       ...prev,
       [section]: !prev[section]
     }));
+  };
+
+  // Handle main menu click
+  const handleMainMenuClick = (menuType) => {
+    if (activeSecondaryMenu === menuType) {
+      // If clicking the same menu, close it
+      setShowSecondaryHeader(false);
+      setActiveSecondaryMenu(null);
+    } else {
+      // Open new menu
+      setActiveSecondaryMenu(menuType);
+      setShowSecondaryHeader(true);
+    }
+  };
+
+  // Handle mouse enter for hover functionality
+  const handleMouseEnter = (menuType) => {
+    setActiveSecondaryMenu(menuType);
+    setShowSecondaryHeader(true);
+  };
+
+  // Handle mouse leave for hover functionality
+  const handleMouseLeave = () => {
+    // Add a delay to allow moving to secondary header
+    setTimeout(() => {
+      // Check if mouse is not over the secondary header
+      const isOverSecondaryHeader = (secondaryHeaderRef.current && 
+        secondaryHeaderRef.current.contains(document.activeElement)) ||
+        (secondaryHeaderRef.current && 
+         secondaryHeaderRef.current.matches(':hover'));
+      
+      if (!isOverSecondaryHeader) {
+        setShowSecondaryHeader(false);
+        setActiveSecondaryMenu(null);
+      }
+    }, 300);
+  };
+
+  // Handle secondary header mouse enter
+  const handleSecondaryHeaderMouseEnter = () => {
+    // Keep the secondary header open when hovering over it
+    setShowSecondaryHeader(true);
+  };
+
+  // Handle secondary header mouse leave
+  const handleSecondaryHeaderMouseLeave = () => {
+    // Close when leaving the secondary header
+    setShowSecondaryHeader(false);
+    setActiveSecondaryMenu(null);
   };
 
   // Search functionality
@@ -166,26 +232,29 @@ const collectionItems = [
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         setShowSearchResults(false);
       }
+      if (secondaryHeaderRef.current && !secondaryHeaderRef.current.contains(event.target)) {
+        setShowSecondaryHeader(false);
+        setActiveSecondaryMenu(null);
+      }
     };
 
-    if (searchOpen) {
+    if (searchOpen || showSecondaryHeader) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [searchOpen]);
+  }, [searchOpen, showSecondaryHeader]);
 
   return (
     <header
-      className="fixed top-0 left-0 w-full z-50 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.1)]"
+      className="fixed top-0 left-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-gray-100/50"
       style={{
-        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-
+        fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif",
       }}
     >
-      <div className="max-w-[1600px] mx-auto flex items-center justify-between px-4 md:px-8 lg:px-12 py-4">
+      <div className="max-w-[1600px] mx-auto flex items-center justify-between px-6 md:px-12 lg:px-16 py-5">
 
         {/* Mobile Layout */}
         <div className="flex items-center justify-between w-full md:hidden">
@@ -265,41 +334,26 @@ const collectionItems = [
               />
             </Link>
 
-            {/* Navigation Menu - Luxury Typography */}
-            <nav className="flex items-center space-x-8">
+            {/* Navigation Menu - Premium Typography */}
+            <nav className="flex items-center space-x-12">
               {menuItems.map((item) => (
-                <div key={item.nav} className="relative group">
-                  {item.nav === "Collections" ? (
-                    <button className="text-black hover:text-luxury-gold transition-all duration-300 font-medium text-sm tracking-wide uppercase relative">
-                      {item.label}
-                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-luxury-gold transition-all duration-300 group-hover:w-full"></span>
-                    </button>
-                  ) : (
-                    <Link
-                      to={item === "Home" ? "/" : `/${item.nav.toLowerCase()}`}
-                      className="text-black hover:text-luxury-gold transition-all duration-300 font-medium text-sm tracking-wide uppercase relative"
-                    >
-                      {item.label}
-                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-luxury-gold transition-all duration-300 group-hover:w-full"></span>
-                    </Link>
-                  )}
-
-                  {/* Collections Dropdown - Luxury Design */}
-                  {item.nav === "Collections" && (
-                    <div className="absolute top-10 left-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 delay-100 bg-white rounded-2xl p-6 min-w-[280px] shadow-2xl border border-gray-100">
-                      <div className="space-y-3">
-                        {collectionItems.map((cat) => (
-                          <Link
-                            key={cat.label}
-                            to={`/products/${cat.nav.replace(/\s/g, "-")}`}
-                            className="block px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-sm text-black hover:text-luxury-gold font-medium tracking-wide"
-                          >
-                            {cat.label}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                <div
+                  key={item.nav}
+                  className="relative group"
+                  onMouseEnter={() => handleMouseEnter(item.nav)}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  <button
+                    onClick={() => handleMainMenuClick(item.nav)}
+                    className={`text-gray-700 hover:text-gray-900 transition-all duration-500 font-light text-sm tracking-widest uppercase relative group ${
+                      activeSecondaryMenu === item.nav ? 'text-gray-900' : ''
+                    }`}
+                  >
+                    {item.label}
+                    <span className={`absolute -bottom-2 left-0 h-px bg-gray-900 transition-all duration-500 ease-out ${
+                      activeSecondaryMenu === item.nav ? 'w-full' : 'w-0 group-hover:w-full'
+                    }`}></span>
+                  </button>
                 </div>
               ))}
             </nav>
@@ -361,10 +415,14 @@ const collectionItems = [
 
           {/* Right Section - Utilities */}
           <div className="flex items-center space-x-6">
-            {/* Language Switcher */}
-            <div className="flex items-center">
-              <LanguageSwitcher />
-            </div>
+            {/* Wishlist Icon - Desktop Only */}
+            <Link
+              to="/wishlist"
+              className="flex items-center justify-center w-10 h-10 text-black hover:text-luxury-gold transition-all duration-300 rounded-full hover:bg-luxury-gold/10"
+              title={t("navbar.wishlist.tooltip." + i18n.language)}
+            >
+              <Heart size={20} strokeWidth={1.5} />
+            </Link>
 
             {/* Account Icon - Luxury Design */}
             {isAuthenticated ? (
@@ -394,13 +452,6 @@ const collectionItems = [
                       >
                         <Package size={16} />
                         <span>{t("navbar.account.orders." + i18n.language)}</span>
-                      </Link>
-                      <Link
-                        to="/wishlist"
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-sm text-black hover:text-luxury-gold font-medium"
-                      >
-                        <Heart size={16} />
-                        <span>{t("navbar.account.wishlist." + i18n.language)}</span>
                       </Link>
                     </div>
                   </div>
@@ -443,9 +494,67 @@ const collectionItems = [
                 <LogOut size={18} strokeWidth={1.5} />
               </button>
             )}
+
+            {/* Language Switcher */}
+            <div className="flex items-center">
+              <LanguageSwitcher />
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Secondary Header Section - Premium Design */}
+      {showSecondaryHeader && (
+        <div 
+          ref={secondaryHeaderRef} 
+          className="hidden md:block bg-white/95 backdrop-blur-md border-t border-gray-100/50 shadow-xl animate-slideDown"
+          style={{
+            fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif",
+          }}
+          onMouseEnter={handleSecondaryHeaderMouseEnter}
+          onMouseLeave={handleSecondaryHeaderMouseLeave}
+        >
+          <div className="max-w-[1600px] mx-auto px-6 md:px-12 lg:px-16 py-8">
+            {activeSecondaryMenu === "Collections" && (
+              <div className="flex flex-wrap justify-center gap-8 md:gap-12">
+                {collectionItems.map((item, index) => (
+                  <Link
+                    key={item.label}
+                    to={`/products/${item.nav.replace(/\s/g, "-")}`}
+                    className="group relative px-6 py-3 text-sm font-light text-gray-600 hover:text-gray-900 transition-all duration-500 uppercase tracking-widest hover:scale-105 transform"
+                    style={{
+                      animationDelay: `${index * 100}ms`,
+                      animation: 'fadeInUp 0.6s ease-out forwards'
+                    }}
+                  >
+                    {item.label}
+                    <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-px bg-gray-900 transition-all duration-500 group-hover:w-full"></span>
+                  </Link>
+                ))}
+              </div>
+            )}
+            
+            {activeSecondaryMenu === "Accessories" && (
+              <div className="flex flex-wrap justify-center gap-8 md:gap-12">
+                {accessoriesItems.map((item, index) => (
+                  <Link
+                    key={item.label}
+                    to={`/products/${item.nav}`}
+                    className="group relative px-6 py-3 text-sm font-light text-gray-600 hover:text-gray-900 transition-all duration-500 uppercase tracking-widest hover:scale-105 transform"
+                    style={{
+                      animationDelay: `${index * 100}ms`,
+                      animation: 'fadeInUp 0.6s ease-out forwards'
+                    }}
+                  >
+                    {item.label}
+                    <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-px bg-gray-900 transition-all duration-500 group-hover:w-full"></span>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Sidebar */}
       {sidebarOpen && (
@@ -474,27 +583,18 @@ const collectionItems = [
               {/* Main Navigation */}
               {menuItems.map((item) => (
                 <div key={item.nav} className="w-full">
-                  {item.nav === "Collections" ? (
-                    <button
-                      onClick={() => toggleAccordion('collections')}
-                      className="flex items-center justify-between w-full text-black font-semibold py-2 hover:text-gray-700 transition-colors duration-300"
-                    >
-                      <span>{item.label}</span>
-                      {expandedSections.collections ? (
-                        <ChevronDown size={18} />
-                      ) : (
-                        <ChevronRight size={18} />
-                      )}
-                    </button>
-                  ) : (
-                    <Link
-                      to={item.nav === "Home" ? "/" : `/${item.nav.toLowerCase()}`}
-                      className="block w-full text-black hover:text-gray-700 transition-colors duration-300 font-medium py-2"
-                      onClick={() => setSidebarOpen(false)}
-                    >
-                      {item.label}
-                    </Link>
-                  )}
+                  <button
+                    onClick={() => toggleAccordion(item.nav.toLowerCase())}
+                    className="flex items-center justify-between w-full text-black font-semibold py-2 hover:text-gray-700 transition-colors duration-300"
+                  >
+                    <span>{item.label}</span>
+                    {expandedSections[item.nav.toLowerCase()] ? (
+                      <ChevronDown size={18} />
+                    ) : (
+                      <ChevronRight size={18} />
+                    )}
+                  </button>
+                  
                   {item.nav === "Collections" && expandedSections.collections && (
                     <div className="pl-4 mt-2 space-y-2 animate-slideDown">
                       {collectionItems.map((cat) => (
@@ -505,6 +605,21 @@ const collectionItems = [
                           onClick={() => setSidebarOpen(false)}
                         >
                           {cat.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {item.nav === "Accessories" && expandedSections.accessories && (
+                    <div className="pl-4 mt-2 space-y-2 animate-slideDown">
+                      {accessoriesItems.map((accessory) => (
+                        <Link
+                          key={accessory.label}
+                          to={`/products/${accessory.nav}`}
+                          className="block text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
+                          onClick={() => setSidebarOpen(false)}
+                        >
+                          {accessory.label}
                         </Link>
                       ))}
                     </div>
@@ -553,14 +668,6 @@ const collectionItems = [
                         >
                           <Package size={16} />
                           <span>{t("navbar.account.orders."+i18n.language)}</span>
-                        </Link>
-                        <Link
-                          to="/wishlist"
-                          className="flex items-center gap-3 text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
-                          onClick={() => setSidebarOpen(false)}
-                        >
-                          <Heart size={16} />
-                          <span>{t("navbar.account.wishlist."+i18n.language)}</span>
                         </Link>
                         <button
                           onClick={() => {
@@ -676,6 +783,61 @@ const collectionItems = [
         }
         .animate-slideInLeft {
           animation: slideInLeft 0.3s ease forwards;
+        }
+        @keyframes fadeInUp {
+          0% {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fadeInUp {
+          animation: fadeInUp 0.6s ease-out forwards;
+        }
+        @keyframes slideDown {
+          0% {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-slideDown {
+          animation: slideDown 0.4s ease-out forwards;
+        }
+      `}</style>
+      <style jsx global>{`
+        /* Premium Font Family for Headers */
+        header, .header-font {
+          font-family: 'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif !important;
+        }
+        /* Enhanced Typography for Luxury Feel */
+        .luxury-text {
+          font-family: 'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+          font-weight: 300;
+          letter-spacing: 0.05em;
+        }
+        .luxury-text-bold {
+          font-family: 'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+          font-weight: 400;
+          letter-spacing: 0.05em;
+        }
+        /* Thin Fonts for Navigation */
+        nav, .nav-text {
+          font-weight: 300 !important;
+        }
+        /* Light Gray Color for Thin Look */
+        .luxury-text, .luxury-text-bold, nav, .nav-text {
+          color: #4a4a4a !important;
+        }
+        /* Tracking Wide for Premium Feel */
+        .tracking-wide {
+          letter-spacing: 0.025em;
         }
       `}</style>
     </header>
