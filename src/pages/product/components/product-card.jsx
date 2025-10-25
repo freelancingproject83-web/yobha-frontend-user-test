@@ -67,16 +67,12 @@ const ProductCard = ({ product }) => {
     setCurrentImageIndex(index);
   };
 
-  // Auto carousel effect
+  // Auto carousel effect - Always running like TrendingNewArrivals
   useEffect(() => {
-    if (hasMultipleImages && isHovered) {
+    if (hasMultipleImages) {
       autoCarouselRef.current = setInterval(() => {
         setCurrentImageIndex((prev) => (prev + 1) % productImages.length);
       }, 3000); // Change image every 3 seconds
-    } else {
-      if (autoCarouselRef.current) {
-        clearInterval(autoCarouselRef.current);
-      }
     }
 
     return () => {
@@ -84,7 +80,7 @@ const ProductCard = ({ product }) => {
         clearInterval(autoCarouselRef.current);
       }
     };
-  }, [isHovered, hasMultipleImages, productImages.length]);
+  }, [hasMultipleImages, productImages.length]);
 
   // Intersection Observer for fade-in animation
   useEffect(() => {
